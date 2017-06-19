@@ -16,6 +16,7 @@ static coord_t          swidth, sheight;
 
 static void DrawHeader(const char *title, bool_t btnNext, bool_t btnPrev, bool_t btnPlusMinus);
 void UserInterface();
+
 static int CheckButtons(GEventMouse *pem);
 
 #endif //__UI_H__

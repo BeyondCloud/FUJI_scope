@@ -20,20 +20,40 @@ void SystemClock_Config(void);
 void Error_Handler(void);
 void MX_FREERTOS_Init(void);
 
+#define PI 3.14159265
+static uint16_t ADC_buffer[2][320]={};
 
 osThreadId UI_TaskHandle;
+osThreadId ADC_TaskHandle;
+__IO uint16_t ADC_val=0;
 
-osThreadId TouchTaskHandle;
-void Touch_Task(void const * argument)
+void LED1_blink_Task(void const * argument)
 {
-    LCD_Initializtion();
-
-  Tpad_Init();
-  Tpad_Calibrate();
-  for(;;){}
+  for(;;)
+  {
+    HAL_GPIO_TogglePin(GPIOD,GPIO_PIN_12);
+    osDelay(500);
+  }
+}
+void LED2_blink_Task(void const * argument)
+{
+  for(;;)
+  {
+    HAL_GPIO_TogglePin(GPIOD,GPIO_PIN_13);
+    osDelay(1000);
+  }
 }
 
-#define PI 3.14159265
+void ADC_Task()
+{
+  MX_ADC1_Init();
+  HAL_ADC_Start_DMA(&hadc1, (uint32_t*)&ADC_val,1);
+  HAL_ADC_Start(&hadc1);
+  while(1)
+  {
+      
+  }
+}
 int main(void)
 {
 
@@ -46,20 +66,18 @@ int main(void)
   MX_RNG_Init();
   MX_SPI3_Init();
 //  LCD_Initializtion();
+  MX_ADC1_Init();
+  HAL_ADC_Start_DMA(&hadc1, (uint32_t*)&ADC_val,1);
+  HAL_ADC_Start(&hadc1);
 
-
-  osThreadDef(UI_Task, UserInterface, osPriorityHigh, 1, 2048);
+/*
+  osThreadDef(my_ADC_Task, ADC_Task, osPriorityRealtime, 1, 2048);
+  ADC_TaskHandle = osThreadCreate(osThread(my_ADC_Task), NULL);
+*/
+  osThreadDef(UI_Task, UserInterface, osPriorityHigh, 1, 1024);
   UI_TaskHandle = osThreadCreate(osThread(UI_Task), NULL);
 
-  /*
-    osThreadDef(t_Task,Touch_Task, osPriorityHigh, 1, 1024);
-  TouchTaskHandle = osThreadCreate(osThread(t_Task), NULL);
-*/
-//HAL_GPIO_TogglePin(GPIOD,GPIO_PIN_12);
   osKernelStart();
-
-
-
 }
 
 
@@ -83,8 +101,8 @@ void SystemClock_Config(void)
   RCC_OscInitStruct.HSEState = RCC_HSE_ON;
   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
   RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
-  RCC_OscInitStruct.PLL.PLLM = 25;
-  RCC_OscInitStruct.PLL.PLLN = 336;
+  RCC_OscInitStruct.PLL.PLLM = 23;
+  RCC_OscInitStruct.PLL.PLLN = 334;
   RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV2;
   RCC_OscInitStruct.PLL.PLLQ = 8;
   HAL_RCC_OscConfig(&RCC_OscInitStruct);

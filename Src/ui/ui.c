@@ -9,9 +9,19 @@
 #include "ginput_driver_mouse.h"
 #include <string.h>
 
-/*  screeen disp coordinate
+#include "stm32f4xx_hal.h"
 
-    (0,0)-----------(320,0)
+#include "cmsis_os.h"
+#include "rng.h"
+#include "myDraw.h"
+#include "colors.h"
+#include "spi.h"
+#include "gpio.h"
+#include "LCD.h"
+#include "gwin_widget.h"
+/*  screeen disp coordinate
+         __________
+    (0,0)          (320,0)
     |                   |
     |                   |
     (0,240)________(320,240)
@@ -32,11 +42,14 @@ void UserInterface()
   gwinAttachListener(&glistener);
 
   guiCreate();
+  //displayADC();
 
 
 
-
-  while (1) {
+  while (1) 
+  {
+    
     guiEventLoop();
   }
 }
+

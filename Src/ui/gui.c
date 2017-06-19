@@ -3,12 +3,23 @@
 /*                                                                            */
 /* http://ugfx.org                                                            */
 /******************************************************************************/
-
 #include "colors.h"
 #include "widgetstyles.h"
 #include "gui.h"
+
 #include "gwin_widget.h"
 #include "myDraw.h"
+
+//copy from main.c of master
+#include "stm32f4xx_hal.h"
+#include "cmsis_os.h"
+#include "rng.h"
+#include "spi.h"
+#include "adc.h"
+#include "gpio.h"
+#include "LCD.h"
+#include "Tpad.h"
+#include "math.h"
 
 #define TOP_UI_Y	30
 #define DOWN_UI_Y	200 //240-40
@@ -25,6 +36,7 @@
 
 #define T_Div_List_ID 10
 #define V_Div_List_ID 11
+
 
 int Trg_Y_val=120;
 // GListeners
@@ -689,13 +701,14 @@ static void createPagePage0(void)
 
 
 	// Create label widget: CH1_RMS_Label_Txt
+
 	wi.g.show = TRUE;
 	wi.g.x = 65;
 	wi.g.y = 200;
 	wi.g.width = 45;
 	wi.g.height = 10;
 	wi.g.parent = ghContainerPage0;
-	wi.text = "0.000";
+	wi.text ="";
 	wi.customDraw = gwinLabelDrawJustifiedRight;
 	wi.customParam = 0;
 	wi.customStyle = &x;
@@ -711,7 +724,7 @@ static void createPagePage0(void)
 	wi.g.width = 50;
 	wi.g.height = 10;
 	wi.g.parent = ghContainerPage0;
-	wi.text = "0.000";
+	wi.text = "";
 	wi.customDraw = gwinLabelDrawJustifiedRight;
 	wi.customParam = 0;
 	wi.customStyle = &x;
@@ -727,7 +740,7 @@ static void createPagePage0(void)
 	wi.g.width = 45;
 	wi.g.height = 10;
 	wi.g.parent = ghContainerPage0;
-	wi.text = "0.000";
+	wi.text = "";
 	wi.customDraw = gwinLabelDrawJustifiedRight;
 	wi.customParam = 0;
 	wi.customStyle = &x;
@@ -737,13 +750,14 @@ static void createPagePage0(void)
 	gwinRedraw(CH1_Max_Label_Txt);
 
 	// Create label widget: CH1_Min_Label_Txt
+
 	wi.g.show = TRUE;
 	wi.g.x = 135;
 	wi.g.y = 210;
 	wi.g.width = 45;
 	wi.g.height = 10;
 	wi.g.parent = ghContainerPage0;
-	wi.text = "0.000";
+	wi.text = "";
 	wi.customDraw = gwinLabelDrawJustifiedRight;
 	wi.customParam = 0;
 	wi.customStyle = &x;
@@ -753,13 +767,14 @@ static void createPagePage0(void)
 	gwinRedraw(CH1_Min_Label_Txt);
 
 	// Create label widget: CH1_PP_Label_Txt
+
 	wi.g.show = TRUE;
 	wi.g.x = 195;
 	wi.g.y = 200;
 	wi.g.width = 55;
 	wi.g.height = 10;
 	wi.g.parent = ghContainerPage0;
-	wi.text = "0.000";
+	wi.text = "";
 	wi.customDraw = gwinLabelDrawJustifiedRight;
 	wi.customParam = 0;
 	wi.customStyle = &x;
@@ -769,13 +784,14 @@ static void createPagePage0(void)
 	gwinRedraw(CH1_PP_Label_Txt);
 
 	// Create label widget: CH1_Pk_Label_Txt
+
 	wi.g.show = TRUE;
 	wi.g.x = 195;
 	wi.g.y = 210;
 	wi.g.width = 55;
 	wi.g.height = 10;
 	wi.g.parent = ghContainerPage0;
-	wi.text = "0.000";
+	wi.text = "";
 	wi.customDraw = gwinLabelDrawJustifiedRight;
 	wi.customParam = 0;
 	wi.customStyle = &x;
@@ -791,7 +807,7 @@ static void createPagePage0(void)
 	wi.g.width = 55;
 	wi.g.height = 10;
 	wi.g.parent = ghContainerPage0;
-	wi.text = "0.000";
+	wi.text = "";
 	wi.customDraw = gwinLabelDrawJustifiedRight;
 	wi.customParam = 0;
 	wi.customStyle = &x;
@@ -807,7 +823,7 @@ static void createPagePage0(void)
 	wi.g.width = 60;
 	wi.g.height = 10;
 	wi.g.parent = ghContainerPage0;
-	wi.text = "0.000";
+	wi.text = "";
 	wi.customDraw = gwinLabelDrawJustifiedRight;
 	wi.customParam = 0;
 	wi.customStyle = &x;
@@ -850,6 +866,7 @@ static void createPagePage0(void)
 
 }
 
+
 void guiShowPage(unsigned pageIndex)
 {
 	// Hide all pages
@@ -865,6 +882,75 @@ void guiShowPage(unsigned pageIndex)
 		break;
 	}
 }
+int use_buf=0;
+void waveDisplay()
+{
+	/*
+		int i;
+ 	for(i = 0; i < 320; i++) {
+        gdispDrawPixel(i, 120+80*cos(2*M_PI*i/200),White);
+    }
+    */
+
+  //uint16_t ADC_val=0;
+  uint16_t smp_cnt = 0;
+
+  uint16_t buf_i=0;
+  //Assume 42MHz sample rate---> down scale to 420Hz
+  char str[32];
+  int i;
+  __IO uint16_t ADC_val;
+  while(!UI_data_ready)
+  {
+
+  	ADC_val = HAL_ADC_GetValue(&hadc1);
+    smp_cnt++;
+    if(smp_cnt > 10){
+      if(buf_i==320)
+      {
+        use_buf = !use_buf;
+        for(i=0;i<(320-1);i++)
+        {
+          gdispDrawLine( i,ADC_buffer[use_buf][i],i,ADC_buffer[use_buf][i+1],Black);
+        }
+        use_buf = !use_buf;
+        
+        for(i=0;i<(320-1);i++)
+        {
+          gdispDrawLine( i,ADC_buffer[use_buf][i],i,ADC_buffer[use_buf][i+1],Green);
+        }
+        use_buf = !use_buf;
+        UI_data_ready = TRUE;
+        updateMeasData();
+       break;
+       
+      }
+      ADC_buffer[use_buf][buf_i] = (ADC_val)*240/4096;
+      buf_i++;
+      smp_cnt = 0;
+    }
+  }
+  
+}
+
+void updateMeasData()
+{
+	char updateValue[16];
+	float2str(getMax(),updateValue,3);
+	gwinSetText(CH1_Max_Label_Txt,updateValue,TRUE);	
+	float2str(getRMS(),updateValue,3);
+	gwinSetText(CH1_RMS_Label_Txt,updateValue,TRUE);
+	float2str(getMin(),updateValue,3);
+	gwinSetText(CH1_Min_Label_Txt,updateValue,TRUE);	
+	float2str(getP2P(),updateValue,3);
+	gwinSetText(CH1_PP_Label_Txt,updateValue,TRUE);
+	float2str(getPk(),updateValue,3);
+	gwinSetText(CH1_Pk_Label_Txt,updateValue,TRUE);	
+	UI_data_ready = FALSE;
+}
+
+
+
 
 void guiCreate(void)
 {
@@ -894,10 +980,35 @@ void guiCreate(void)
 
 
 
+	//draw ADC data
+
+/*
+   float val=0;
+    char str[16];
+     for(;;)
+  {
+
+    val+=0.001;
+   // sprintf(str, "%.3f", val);
+  //	snprintf(str, sizeof(str), "%.3f", val);
+
+  float2str(ADC_val,str,3);
+
+   LCD_print(10, 30, str);
+    osDelay(300);
+    LCD_printColor(10, 30, str, Black);
+   // LCD_Clear(Black);
+  }
+*/
+	
+
+
+/*
 	int i;
  	for(i = 0; i < 320; i++) {
-        gdispDrawPixel(i, 120+80*sin(2*M_PI*i/180),White);
+        gdispDrawPixel(i, 120+80*cos(2*M_PI*i/200),White);
     }
+*/
  
 }
 
@@ -958,7 +1069,9 @@ void guiEventLoop(void)
 	{
 		// Get an event
 		//stuck here until event is received
-		pe = geventEventWait(&glistener, TIME_INFINITE);
+   		waveDisplay();
+ 
+		pe = geventEventWait(&glistener,5);
 		switch (pe->type) 
 		{
 			case GEVENT_GWIN_BUTTON:
@@ -979,6 +1092,7 @@ void guiEventLoop(void)
 				if(opened_gh==NULL)
 					break;
 				tag = gwinGetTag(*opened_gh);
+				
 				switch(tag)
 				{
 					case Y_Trg_Button_ID:
