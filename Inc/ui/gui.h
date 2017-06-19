@@ -3,13 +3,13 @@
 /*                                                                            */
 /* http://ugfx.org                                                            */
 /******************************************************************************/
-
 #ifndef _GUI_H_
 #define _GUI_H_
 
 #include "gfx.h"
+//#include "scope.h"
 
-// Widget groups
+// Widupdate groups
 #define GROUP_DEFAULT 0
 
 #define DOT_ON 2
@@ -74,7 +74,6 @@ extern GHandle CH1_P_Label_Txt;
 extern GHandle Label_CH2;
 extern GHandle CH2_Label;
 
-extern uint16_t ADC_buffer[2][320];
 
 // Function Prototypes
 
@@ -84,6 +83,8 @@ void guiCreate(void);
 void guiShowPage(unsigned pageIndex);
 void guiEventLoop(void);
 void updateMeasData(void);
+
+
 extern uint16_t ADC_buffer[][320];
 
 static bool UI_data_ready;

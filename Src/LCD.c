@@ -659,7 +659,6 @@ void 	float2str( float f,char *str,int digit)
     char remain_str[32];
     sprintf(str,"%d",i);
     char tmp[8]={'%', '0'},tmp2[8];
-
     sprintf(tmp2, "%d", digit);
     strcat(tmp,tmp2);
     strcat(tmp,"d");

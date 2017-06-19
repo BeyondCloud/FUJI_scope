@@ -3,6 +3,7 @@
 /*                                                                            */
 /* http://ugfx.org                                                            */
 /******************************************************************************/
+#include <stdio.h>
 #include "colors.h"
 #include "widgetstyles.h"
 #include "gui.h"
@@ -20,6 +21,8 @@
 #include "LCD.h"
 #include "Tpad.h"
 #include "math.h"
+
+#include "scope.h"
 
 #define TOP_UI_Y	30
 #define DOWN_UI_Y	200 //240-40
@@ -925,7 +928,8 @@ void waveDisplay()
        break;
        
       }
-      ADC_buffer[use_buf][buf_i] = (ADC_val)*240/4096;
+      setADCbuf(use_buf,buf_i,(ADC_val)*240/4096);
+      //ADC_buffer[use_buf][buf_i] = (ADC_val)*240/4096;
       buf_i++;
       smp_cnt = 0;
     }
@@ -935,17 +939,32 @@ void waveDisplay()
 
 void updateMeasData()
 {
-	char updateValue[16];
-	float2str(getMax(),updateValue,3);
-	gwinSetText(CH1_Max_Label_Txt,updateValue,TRUE);	
-	float2str(getRMS(),updateValue,3);
-	gwinSetText(CH1_RMS_Label_Txt,updateValue,TRUE);
-	float2str(getMin(),updateValue,3);
-	gwinSetText(CH1_Min_Label_Txt,updateValue,TRUE);	
-	float2str(getP2P(),updateValue,3);
-	gwinSetText(CH1_PP_Label_Txt,updateValue,TRUE);
-	float2str(getPk(),updateValue,3);
-	gwinSetText(CH1_Pk_Label_Txt,updateValue,TRUE);	
+	updateMax();
+	updateMin();
+	updateP2P();
+	updatePK();
+	updateRMS();
+	char max_s[16];
+	char min_s[16];
+	char rms_s[16];
+	char val_str[16];
+	//snprintf(updateVal, sizeof(updateVal), "%f",getMax());
+	//sprintf(updateVal,"%0.3f",getMax());
+	float2str(getRMS(),val_str,3);
+	gwinSetText(CH1_RMS_Label_Txt,val_str,TRUE);
+
+
+	float2str(getMax(),val_str,3);
+	gwinSetText(CH1_Max_Label_Txt,val_str,TRUE);
+
+	float2str(getMin(),val_str,3);
+	gwinSetText(CH1_Min_Label_Txt,val_str,TRUE);
+
+	float2str(getP2P(),val_str,3);
+	gwinSetText(CH1_PP_Label_Txt,val_str,TRUE);
+	float2str(getPK(),val_str,3);
+	gwinSetText(CH1_Pk_Label_Txt,val_str,TRUE);	
+	
 	UI_data_ready = FALSE;
 }
 
