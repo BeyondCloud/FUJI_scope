@@ -935,6 +935,7 @@ void waveDisplay()
   	  }
   	  	adc_cnt++;
    }
+   redraw_grid();
    //now draw your wave 
    for(x=0;x<ADC_bufsize;x++)
    {
@@ -951,6 +952,7 @@ void waveDisplay()
    }
    	updateMeasData();
    	redraw_cursor();
+   	
        
 }
 
@@ -983,6 +985,22 @@ void updateMeasData()
 void redraw_cursor()
 {
 	drawDotLineHV(0, Trg_Y_val, 320, Trg_Y_val, Red);
+							
+}
+void redraw_grid()
+{
+	//horizontal grid
+	float y_step=DSO_DISP_H/6;
+	int i =0;
+	float cur_y=y_step+TOP_UI_Y;
+	for(i;i<5;i++)
+	{
+		drawDotLineHV(0, (int)cur_y, 320, (int)cur_y, navy_studio);
+		cur_y+=y_step;
+	}
+	//vertical grid
+	for(i=0;i<320;i+=32)
+		drawDotLineHV(i,TOP_UI_Y, i,BOTTOM_UI_Y, navy_studio);
 							
 }
 
@@ -1044,13 +1062,20 @@ inline void btn_event(uint16_t tag)
 //Set text if select item
 inline void lst_event(GHandle gh,uint16_t tag,GEvent* pe)
 {
+	char* chp = gwinListItemGetText(gh,((GEventGWinList *)pe)->item);
 	switch(tag)
 	{
 		case T_Div_List_ID:
-			gwinSetText(T_Div_Label,gwinListItemGetText(gh,((GEventGWinList *)pe)->item),TRUE);	
+			gwinSetText(T_Div_Label,chp,TRUE);	
+			if( strcmp(chp,"1ms") == 0)
+			{
+				//gdispFillArea(0,TOP_UI_Y,320,DSO_DISP_H, Black);
+		        //Trg_Y_val = 120;
+			}
 		break;
 		case V_Div_List_ID:
-			gwinSetText(V_Div_Label,gwinListItemGetText(gh,((GEventGWinList *)pe)->item),TRUE);		
+			gwinSetText(V_Div_Label,chp,TRUE);	
+
 		break;
 			
 	}
