@@ -38,7 +38,13 @@ void updatePK()
 {
 	scope.pk = scope.p2p/2;
 }
-
+void updateAVG()
+{
+	int i;
+	for(i=0;i<ADC_bufsize;i++)
+		scope.avg += (scope.buf[0][i]);
+	scope.avg = scope.avg/ADC_bufsize;
+}
 void updateRMS()
 {
 	int i;
@@ -52,3 +58,4 @@ float getMin(){return scope.min;}
 float getP2P(){return scope.p2p;}
 float getPK(){return scope.pk;}
 float getRMS(){return scope.rms;}
+float getAVG(){return scope.avg;}

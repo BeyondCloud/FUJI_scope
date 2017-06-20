@@ -21,6 +21,7 @@
 
 #define TOP_UI_Y	30
 #define BOTTOM_UI_Y	200 //240-40
+#define DSO_CENTER_Y (BOTTOM_UI_Y+TOP_UI_Y)/2
 
 
 #define DSO_DISP_W	320
@@ -35,10 +36,11 @@
 #define T_Div_List_ID 10
 #define V_Div_List_ID 11
 extern scope_t scope;
+int cur_draw[ADC_bufsize]= {120};
+
 int prev_draw[ADC_bufsize]= {120};
 
 int TIME_STEP=10;
-
 int Trg_Y_val=120;
 int Trg_pixel_range_PM=2;//PM means plus minus
 
@@ -881,46 +883,65 @@ void guiShowPage(unsigned pageIndex)
 		break;
 	}
 }
-inline int getRemapADC()
+//the data we ready to put inside cur_draw
+inline int mapADC_Y2screen(int ADC_val)
 {
   //ADC_val =0~ 4096
-  //linear map 0~4096 to 30~200,also flip Y vertically    
-  uint16_t ADC_val = HAL_ADC_GetValue(&hadc1);
-  int remap = BOTTOM_UI_Y - ((ADC_val)*DSO_DISP_H/4096);
+  //linear map 0~4096 to 0~DSO_DISP_H ,flip Y vertically
+  int remap = DSO_DISP_H - ((ADC_val)*DSO_DISP_H/4096);
+  remap = remap + TOP_UI_Y ;//-(getAVG()-DSO_CENTER_Y)
   //ensure data draw won't overwite UI
   return clamp(remap,TOP_UI_Y,BOTTOM_UI_Y);
 }
-bool isTriggered(int data)
+bool isTriggered(int data,int prev_data)
 {
-	int error = abs(data-Trg_Y_val);
-	return (error<=Trg_pixel_range_PM);
+	return ((abs(data-Trg_Y_val)<=Trg_pixel_range_PM) &&(prev_data<=data));
 }
 void waveDisplay()
 {
   uint8_t adc_cnt = 0;
   //Assume 42MHz sample rate---> down scale to 420Hz
-  scope.buf[0][0] = getRemapADC();
+  scope.buf[0][0] = HAL_ADC_GetValue(&hadc1);
   int x = 1;
-  //get 320 adc data, redraw scope 
+  bool Trg_flag = false;
+  //get 320 adc data
+  //DONOT draw wave in this field ,do it later instead. 
   while(TRUE)
   {
   	if(adc_cnt > TIME_STEP)
   	  {	 
-  	  	 scope.buf[0][x] = getRemapADC();
-  	  	 gdispDrawLine( x,prev_draw[x-1],x,prev_draw[x],Black);
-      	 gdispDrawLine( x,scope.buf[0][x-1],x,scope.buf[0][x],Green);
-      	 if(x==ADC_bufsize-1) //buffer 320 ready
+  	  	 scope.buf[0][x] = HAL_ADC_GetValue(&hadc1);
+  	  	 if(!Trg_flag)
+  	  	 {
+  	  	 	if(isTriggered(scope.buf[0][x],scope.buf[0][x-1]))
+	  	  	{
+	  	  		x=0;
+	  	  		Trg_flag = TRUE;
+	  	  	}
+  	  	 }
+   	  	if(x==ADC_bufsize-1) //buffer 320 ready
    			break;
-   	     x++;
+   	     x++; 
    		 adc_cnt = 0;
   	  }
   	  	adc_cnt++;
-  	  
    }
-   int i;
-   for(i=0;i<ADC_bufsize;i++)
-   		prev_draw[i]= scope.buf[0][i];
+   //now draw your wave 
+   for(x=0;x<ADC_bufsize;x++)
+   {
+   		cur_draw[x] =  mapADC_Y2screen(scope.buf[0][x]);
+   }
+   for(x=1;x<ADC_bufsize;x++)
+   {
+   		gdispDrawLine( x,prev_draw[x-1],x,prev_draw[x],Black);
+      	gdispDrawLine( x,cur_draw[x-1],x,cur_draw[x],Green);
+   }
+   for(x=0;x<ADC_bufsize;x++)
+   {
+   		prev_draw[x]= cur_draw[x];
+   }
    	updateMeasData();
+   	
        
 }
 
@@ -931,6 +952,7 @@ void updateMeasData()
 	updateP2P();
 	updatePK();
 	updateRMS();
+	updateAVG();
 	char max_s[16];
 	char min_s[16];
 	char rms_s[16];
