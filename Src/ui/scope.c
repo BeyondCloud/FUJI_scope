@@ -11,10 +11,12 @@
      _a < _b ? _a : _b; })
 
 scope_t scope;
+float screen_Vscale=3.3;
 float ADC_to_V(int adc)
 {
-    return ((float)adc)*3.3/4096.0;
+    return ((float)adc)*screen_Vscale/4096.0;
 }
+
 int clamp(int x, int lower, int upper)
 {
     return min(upper, max(x, lower));

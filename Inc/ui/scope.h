@@ -3,6 +3,7 @@
 
 #include "stm32f4xx_hal.h"
 #define ADC_bufsize 320
+extern float screen_Vscale;
 typedef struct
 {
 	int adc_buf[2][ADC_bufsize];

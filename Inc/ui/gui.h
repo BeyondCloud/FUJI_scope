@@ -85,7 +85,7 @@ void updateMeasData(void);
 
 
 extern uint16_t ADC_buffer[][320];
-
+extern float screen_Vscale;
 static bool UI_data_ready;
 
 #endif /* _GUI_H_ */

@@ -882,6 +882,11 @@ void guiShowPage(unsigned pageIndex)
 		break;
 	}
 }
+inline float screenY_to_V(int Y)
+{
+	//200-->0 ,30->3.3
+	return (DSO_DISP_H-(Y-TOP_UI_Y))*screen_Vscale/DSO_DISP_H;
+}
 //the data we ready to put inside cur_draw
 inline int ADC_to_screenY(int ADC_val)
 {
@@ -952,12 +957,7 @@ void updateMeasData()
 	updatePK();
 	updateRMS();
 	updateAVG();
-	char max_s[16];
-	char min_s[16];
-	char rms_s[16];
 	char val_str[16];
-	//snprintf(updateVal, sizeof(updateVal), "%f",getMax());
-	//sprintf(updateVal,"%0.3f",getMax());
 	float2str(getRMS(),val_str,3);
 	gwinSetText(CH1_RMS_Label_Txt,val_str,TRUE);
 	float2str(getMax(),val_str,3);
@@ -1052,7 +1052,7 @@ void guiEventLoop(void)
 	GSourceHandle gs;	//for listen mouse event 
 	GEventMouse     *pem;
 	uint16_t tag;
-
+	char val_str[16];
 	gs = ginputGetMouse(0);//for listen mouse event 
   	geventAttachSource(&glistener, gs, GLISTEN_MOUSEDOWNMOVES|GLISTEN_MOUSEMETA);
 	//Inf 
@@ -1094,6 +1094,8 @@ void guiEventLoop(void)
 							drawDotLineHV(0, Trg_Y_val, 320, Trg_Y_val, Black);
 							Trg_Y_val = pem->y;
 							drawDotLineHV(0, Trg_Y_val, 320, Trg_Y_val, Red);
+							float2str(screenY_to_V(Trg_Y_val),val_str,3);
+							gwinSetText(Y_Trg_Button,val_str,TRUE);	
 					 	}
 					break;
 					case V_Div_List_ID:
