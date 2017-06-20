@@ -35,11 +35,12 @@
 #define T_Div_List_ID 10
 #define V_Div_List_ID 11
 extern scope_t scope;
-uint16_t prev_draw[ADC_bufsize]= {120};
+int prev_draw[ADC_bufsize]= {120};
 
 int TIME_STEP=10;
 
 int Trg_Y_val=120;
+int Trg_pixel_range_PM=2;//PM means plus minus
 
 // GListeners
 GListener glistener;
@@ -880,27 +881,31 @@ void guiShowPage(unsigned pageIndex)
 		break;
 	}
 }
-uint16_t getRemapADC()
+inline int getRemapADC()
 {
   //ADC_val =0~ 4096
   //linear map 0~4096 to 30~200,also flip Y vertically    
   uint16_t ADC_val = HAL_ADC_GetValue(&hadc1);
-  uint16_t remap = BOTTOM_UI_Y - ((ADC_val)*DSO_DISP_H/4096);
+  int remap = BOTTOM_UI_Y - ((ADC_val)*DSO_DISP_H/4096);
   //ensure data draw won't overwite UI
   return clamp(remap,TOP_UI_Y,BOTTOM_UI_Y);
 }
+bool isTriggered(int data)
+{
+	int error = abs(data-Trg_Y_val);
+	return (error<=Trg_pixel_range_PM);
+}
 void waveDisplay()
 {
-  uint16_t adc_cnt = 0;
+  uint8_t adc_cnt = 0;
   //Assume 42MHz sample rate---> down scale to 420Hz
   scope.buf[0][0] = getRemapADC();
   int x = 1;
-  //get 320 adc data, draw scope 
+  //get 320 adc data, redraw scope 
   while(TRUE)
   {
   	if(adc_cnt > TIME_STEP)
-  	  {
-  	  	 
+  	  {	 
   	  	 scope.buf[0][x] = getRemapADC();
   	  	 gdispDrawLine( x,prev_draw[x-1],x,prev_draw[x],Black);
       	 gdispDrawLine( x,scope.buf[0][x-1],x,scope.buf[0][x],Green);

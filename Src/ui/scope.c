@@ -11,7 +11,7 @@
      _a < _b ? _a : _b; })
 
 scope_t scope;
-uint16_t clamp(uint16_t x, uint16_t lower, uint16_t upper)
+int clamp(int x, int lower, int upper)
 {
     return min(upper, max(x, lower));
 }

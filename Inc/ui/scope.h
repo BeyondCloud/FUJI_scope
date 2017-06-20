@@ -5,7 +5,7 @@
 #define ADC_bufsize 320
 typedef struct
 {
-	uint16_t buf[2][ADC_bufsize];
+	int buf[2][ADC_bufsize];
 	float max;
 	float min;
 	float p2p;
