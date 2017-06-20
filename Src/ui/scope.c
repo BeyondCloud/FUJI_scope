@@ -11,6 +11,10 @@
      _a < _b ? _a : _b; })
 
 scope_t scope;
+float ADC_to_V(int adc)
+{
+    return ((float)adc)*3.3/4096.0;
+}
 int clamp(int x, int lower, int upper)
 {
     return min(upper, max(x, lower));
@@ -18,17 +22,19 @@ int clamp(int x, int lower, int upper)
 void updateMax()
 {
 	int i;
-	scope.max=0;
+	int max=0;
 	for(i=0;i<ADC_bufsize;i++)
-		scope.max = ((scope.max>scope.buf[0][i])?scope.max:scope.buf[0][i]);
+		max = ((max>scope.adc_buf[0][i])?max:scope.adc_buf[0][i]);
+	scope.max = ADC_to_V(max);
 }
 
 void updateMin()
 {
 	int i;
-	scope.min=4096;
+	int min=4096;
 	for(i=0;i<ADC_bufsize;i++)
-		scope.min = ((scope.min<scope.buf[0][i])?scope.min:scope.buf[0][i]);
+		min = ((min<scope.adc_buf[0][i])?min:scope.adc_buf[0][i]);
+	scope.min = ADC_to_V(min);
 }
 void updateP2P()
 {
@@ -36,22 +42,24 @@ void updateP2P()
 }
 void updatePK()
 {
-	scope.pk = scope.p2p/2;
+	scope.pk = scope.p2p/2.0;
 }
 void updateAVG()
 {
+
 	int i;
+	int avg=0;
 	for(i=0;i<ADC_bufsize;i++)
-		scope.avg += (scope.buf[0][i]);
-	scope.avg = scope.avg/ADC_bufsize;
+		avg += scope.adc_buf[0][i];
+	scope.avg = ADC_to_V(avg/ADC_bufsize);
 }
 void updateRMS()
 {
 	int i;
-	scope.rms=0;
+	uint64_t rms=0;
 	for(i=0;i<ADC_bufsize;i++)
-		scope.rms += (scope.buf[0][i]*scope.buf[0][i]);
-	scope.rms = sqrt(scope.rms/ADC_bufsize);
+		rms += (scope.adc_buf[0][i]*scope.adc_buf[0][i]);
+	scope.rms = ADC_to_V(sqrt(rms/ADC_bufsize));
 }
 float getMax(){return scope.max;}
 float getMin(){return scope.min;}

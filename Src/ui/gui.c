@@ -37,7 +37,6 @@
 #define V_Div_List_ID 11
 extern scope_t scope;
 int cur_draw[ADC_bufsize]= {120};
-
 int prev_draw[ADC_bufsize]= {120};
 
 int TIME_STEP=10;
@@ -884,7 +883,7 @@ void guiShowPage(unsigned pageIndex)
 	}
 }
 //the data we ready to put inside cur_draw
-inline int mapADC_Y2screen(int ADC_val)
+inline int ADC_to_screenY(int ADC_val)
 {
   //ADC_val =0~ 4096
   //linear map 0~4096 to 0~DSO_DISP_H ,flip Y vertically
@@ -901,7 +900,7 @@ void waveDisplay()
 {
   uint8_t adc_cnt = 0;
   //Assume 42MHz sample rate---> down scale to 420Hz
-  scope.buf[0][0] = HAL_ADC_GetValue(&hadc1);
+  scope.adc_buf[0][0] = HAL_ADC_GetValue(&hadc1);
   int x = 1;
   bool Trg_flag = false;
   //get 320 adc data
@@ -910,10 +909,10 @@ void waveDisplay()
   {
   	if(adc_cnt > TIME_STEP)
   	  {	 
-  	  	 scope.buf[0][x] = HAL_ADC_GetValue(&hadc1);
+  	  	 scope.adc_buf[0][x] = HAL_ADC_GetValue(&hadc1);
   	  	 if(!Trg_flag)
   	  	 {
-  	  	 	if(isTriggered(scope.buf[0][x],scope.buf[0][x-1]))
+  	  	 	if(isTriggered(scope.adc_buf[0][x],scope.adc_buf[0][x-1]))
 	  	  	{
 	  	  		x=0;
 	  	  		Trg_flag = TRUE;
@@ -929,7 +928,7 @@ void waveDisplay()
    //now draw your wave 
    for(x=0;x<ADC_bufsize;x++)
    {
-   		cur_draw[x] =  mapADC_Y2screen(scope.buf[0][x]);
+   		cur_draw[x] =  ADC_to_screenY(scope.adc_buf[0][x]);
    }
    for(x=1;x<ADC_bufsize;x++)
    {
