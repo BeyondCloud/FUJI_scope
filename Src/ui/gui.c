@@ -91,8 +91,8 @@ GHandle CH1_Max_Label;
 GHandle CH1_Max_Label_Txt;
 GHandle CH1_PP_Label;
 GHandle CH1_PP_Label_Txt;
-GHandle CH1_RT_Label;
-GHandle CH1_RT_Label_Txt;
+GHandle CH1_AVG_Label;
+GHandle CH1_AVG_Label_Txt;
 GHandle CH1_Min_Label;
 GHandle CH1_Min_Label_Txt;
 GHandle CH1_Pk_Label;
@@ -464,21 +464,21 @@ static void createPagePage0(void)
 	gwinSetFont(CH1_PP_Label, dejavu_sans_10);
 	gwinRedraw(CH1_PP_Label);
 
-	// Create label widget: CH1_RT_Label
+	// Create label widget: CH1_AVG_Label
 	wi.g.show = TRUE;
 	wi.g.x = 250;
 	wi.g.y = 200;
-	wi.g.width = 15;
+	wi.g.width = 25;
 	wi.g.height = 10;
 	wi.g.parent = ghContainerPage0;
-	wi.text = "RT:";
+	wi.text = "AVG:";
 	wi.customDraw = gwinLabelDrawJustifiedLeft;
 	wi.customParam = 0;
 	wi.customStyle = &x;
-	CH1_RT_Label = gwinLabelCreate(0, &wi);
-	gwinLabelSetBorder(CH1_RT_Label, FALSE);
-	gwinSetFont(CH1_RT_Label, dejavu_sans_10);
-	gwinRedraw(CH1_RT_Label);
+	CH1_AVG_Label = gwinLabelCreate(0, &wi);
+	gwinLabelSetBorder(CH1_AVG_Label, FALSE);
+	gwinSetFont(CH1_AVG_Label, dejavu_sans_10);
+	gwinRedraw(CH1_AVG_Label);
 
 	// Create label widget: CH1_Min_Label
 	wi.g.show = TRUE;
@@ -804,21 +804,21 @@ static void createPagePage0(void)
 	gwinSetFont(CH1_Pk_Label_Txt, dejavu_sans_10);
 	gwinRedraw(CH1_Pk_Label_Txt);
 
-	// Create label widget: CH1_RT_Label_Txt
+	// Create label widget: CH1_AVG_Label_Txt
 	wi.g.show = TRUE;
-	wi.g.x = 265;
+	wi.g.x = 275;
 	wi.g.y = 200;
-	wi.g.width = 55;
+	wi.g.width = 45;
 	wi.g.height = 10;
 	wi.g.parent = ghContainerPage0;
 	wi.text = "";
 	wi.customDraw = gwinLabelDrawJustifiedRight;
 	wi.customParam = 0;
 	wi.customStyle = &x;
-	CH1_RT_Label_Txt = gwinLabelCreate(0, &wi);
-	gwinLabelSetBorder(CH1_RT_Label_Txt, FALSE);
-	gwinSetFont(CH1_RT_Label_Txt, dejavu_sans_10);
-	gwinRedraw(CH1_RT_Label_Txt);
+	CH1_AVG_Label_Txt = gwinLabelCreate(0, &wi);
+	gwinLabelSetBorder(CH1_AVG_Label_Txt, FALSE);
+	gwinSetFont(CH1_AVG_Label_Txt, dejavu_sans_10);
+	gwinRedraw(CH1_AVG_Label_Txt);
 
 	// Create label widget: CH1_P_Label_Txt
 	wi.g.show = TRUE;
@@ -945,7 +945,7 @@ void waveDisplay()
    		prev_draw[x]= cur_draw[x];
    }
    	updateMeasData();
-   	
+   	redraw_cursor();
        
 }
 
@@ -968,9 +968,15 @@ void updateMeasData()
 	gwinSetText(CH1_PP_Label_Txt,val_str,TRUE);
 	float2str(getPK(),val_str,3);
 	gwinSetText(CH1_Pk_Label_Txt,val_str,TRUE);	
-	
+	float2str(getAVG(),val_str,3);
+	gwinSetText(CH1_AVG_Label_Txt,val_str,TRUE);	
+		
 }
-
+void redraw_cursor()
+{
+	drawDotLineHV(0, Trg_Y_val, 320, Trg_Y_val, Red);
+							
+}
 
 
 
@@ -1024,7 +1030,6 @@ inline void btn_event(uint16_t tag)
 		break;	
 		case Y_Trg_Button_ID:
 			opened_gh = &Y_Trg_Button;
-			drawDotLineHV(0, Trg_Y_val, 320, Trg_Y_val, Red);
 		break;
 	}
 }
@@ -1093,7 +1098,6 @@ void guiEventLoop(void)
 							//Clean previous draw
 							drawDotLineHV(0, Trg_Y_val, 320, Trg_Y_val, Black);
 							Trg_Y_val = pem->y;
-							drawDotLineHV(0, Trg_Y_val, 320, Trg_Y_val, Red);
 							float2str(screenY_to_V(Trg_Y_val),val_str,3);
 							gwinSetText(Y_Trg_Button,val_str,TRUE);	
 					 	}
