@@ -38,7 +38,7 @@
 extern scope_t scope;
 int cur_draw[ADC_bufsize]= {120};
 int prev_draw[ADC_bufsize]= {120};
-
+int Trg_cnt=0;
 int TIME_STEP=10;
 int Trg_Y_val=120;
 int Trg_pixel_range_PM=2;//PM means plus minus
@@ -897,9 +897,10 @@ inline int ADC_to_screenY(int ADC_val)
   //ensure data draw won't overwite UI
   return clamp(remap,TOP_UI_Y,BOTTOM_UI_Y);
 }
-bool isTriggered(int data,int prev_data)
+bool isTriggered(int ADC_data,int prev_ADC_data)
 {
-	return ((abs(data-Trg_Y_val)<=Trg_pixel_range_PM) &&(prev_data<=data));
+	int del = abs(ADC_to_screenY(ADC_data)-Trg_Y_val);
+	return ((del<=Trg_pixel_range_PM) &&(prev_ADC_data<=ADC_data));
 }
 void waveDisplay()
 {
@@ -908,6 +909,7 @@ void waveDisplay()
   scope.adc_buf[0][0] = HAL_ADC_GetValue(&hadc1);
   int x = 1;
   bool Trg_flag = false;
+  Trg_cnt = 0;
   //get 320 adc data
   //DONOT draw wave in this field ,do it later instead. 
   while(TRUE)
@@ -915,14 +917,17 @@ void waveDisplay()
   	if(adc_cnt > TIME_STEP)
   	  {	 
   	  	 scope.adc_buf[0][x] = HAL_ADC_GetValue(&hadc1);
-  	  	 if(!Trg_flag)
-  	  	 {
+
   	  	 	if(isTriggered(scope.adc_buf[0][x],scope.adc_buf[0][x-1]))
 	  	  	{
-	  	  		x=0;
-	  	  		Trg_flag = TRUE;
+	  	  		Trg_cnt++;
+	  	  		 if(!Trg_flag)
+  	  	 		{
+		  	  		x=0;
+		  	  		Trg_flag = TRUE;
+		  	 	}
 	  	  	}
-  	  	 }
+  	  	 
    	  	if(x==ADC_bufsize-1) //buffer 320 ready
    			break;
    	     x++; 
@@ -970,6 +975,9 @@ void updateMeasData()
 	gwinSetText(CH1_Pk_Label_Txt,val_str,TRUE);	
 	float2str(getAVG(),val_str,3);
 	gwinSetText(CH1_AVG_Label_Txt,val_str,TRUE);	
+	float2str(Trg_cnt,val_str,1);
+	gwinSetText(CH1_SF_Label_Txt,val_str,TRUE);	
+	
 		
 }
 void redraw_cursor()
