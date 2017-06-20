@@ -11,18 +11,13 @@
 #include "gwin_widget.h"
 #include "myDraw.h"
 
-//copy from main.c of master
 #include "stm32f4xx_hal.h"
-#include "cmsis_os.h"
-#include "rng.h"
-#include "spi.h"
 #include "adc.h"
-#include "gpio.h"
-#include "LCD.h"
-#include "Tpad.h"
+#include "LCD.h"  //float2str
 #include "math.h"
 
 #include "scope.h"
+
 
 #define TOP_UI_Y	30
 #define DOWN_UI_Y	200 //240-40
@@ -909,18 +904,18 @@ void waveDisplay()
   	ADC_val = HAL_ADC_GetValue(&hadc1);
     smp_cnt++;
     if(smp_cnt > 10){
-      if(buf_i==320)
+      if(buf_i==ADC_bufsize)
       {
         use_buf = !use_buf;
-        for(i=0;i<(320-1);i++)
+        for(i=0;i<(ADC_bufsize-1);i++)
         {
-          gdispDrawLine( i,ADC_buffer[use_buf][i],i,ADC_buffer[use_buf][i+1],Black);
+          gdispDrawLine( i,scope.buf[use_buf][i],i,scope.buf[use_buf][i+1],Black);
         }
         use_buf = !use_buf;
         
-        for(i=0;i<(320-1);i++)
+        for(i=0;i<(ADC_bufsize-1);i++)
         {
-          gdispDrawLine( i,ADC_buffer[use_buf][i],i,ADC_buffer[use_buf][i+1],Green);
+          gdispDrawLine( i,scope.buf[use_buf][i],i,scope.buf[use_buf][i+1],Green);
         }
         use_buf = !use_buf;
         UI_data_ready = TRUE;
@@ -928,8 +923,7 @@ void waveDisplay()
        break;
        
       }
-      setADCbuf(use_buf,buf_i,(ADC_val)*240/4096);
-      //ADC_buffer[use_buf][buf_i] = (ADC_val)*240/4096;
+      scope.buf[use_buf][buf_i] = (ADC_val)*240/4096;
       buf_i++;
       smp_cnt = 0;
     }

@@ -1,59 +1,71 @@
+#ifndef __SCOPE_H__
+#define __SCOPE_H__
 
 #include "stm32f4xx_hal.h"
-
-#ifndef _SCOPE_H_
-#define _SCOPE_H_
-
 #define ADC_bufsize 320
-uint16_t ADC_buffer[2][ADC_bufsize]={};
-float adc_max;
-float adc_min;
-float adc_p2p;
-float adc_min;
-float adc_pk;
-float adc_rms;
+struct scope_t
+{
+	uint16_t buf[2][ADC_bufsize];
+	float max;
+	float min;
+	float p2p;
+	float pk;
+	float rms;
+	/*
+	scope_t scope
+    {
+		buf[2][ADC_bufsize]={};
+		max=0;
+		min=0;
+		p2p=0;
+		min=0;
+		pk=0;
+		rms-0;
+    }*/
+}scope;
+
 void updateMax();
 void updateMin();
 void updateP2P();
 void updatePK();
 void updateRMS();
-float getMax(){return adc_max;};
-float getMin(){return adc_min;};
-float getP2P(){return adc_p2p;};
-float getPK(){return adc_pk;};
-float getRMS(){return adc_rms;};
-inline void setADCbuf(int chnl,uint16_t i,uint16_t val){ADC_buffer[chnl][i] = val;};
+float getMax(){return scope.max;};
+float getMin(){return scope.min;};
+float getP2P(){return scope.p2p;};
+float getPK(){return scope.pk;};
+float getRMS(){return scope.rms;};
+
 void updateMax()
 {
 	int i;
-	adc_max=0;
+	scope.max=0;
 	for(i=0;i<ADC_bufsize;i++)
-		adc_max = ((adc_max>ADC_buffer[0][i])?adc_max:ADC_buffer[0][i]);
+		scope.max = ((scope.max>scope.buf[0][i])?scope.max:scope.buf[0][i]);
 }
 
 void updateMin()
 {
 	int i;
-	adc_min=4096;
+	scope.min=4096;
 	for(i=0;i<ADC_bufsize;i++)
-		adc_min = ((adc_min<ADC_buffer[0][i])?adc_min:ADC_buffer[0][i]);
+		scope.min = ((scope.min<scope.buf[0][i])?scope.min:scope.buf[0][i]);
 }
 void updateP2P()
 {
-	adc_p2p =  adc_max-adc_min;
+	scope.p2p =  scope.max-scope.min;
 }
 void updatePK()
 {
-	adc_pk = adc_p2p/2;
+	scope.pk = scope.p2p/2;
 }
 
 void updateRMS()
 {
 	int i;
-	adc_rms=0;
+	scope.rms=0;
 	for(i=0;i<ADC_bufsize;i++)
-		adc_rms += (ADC_buffer[0][i]*ADC_buffer[0][i]);
-	adc_rms = sqrt(adc_rms/ADC_bufsize);
+		scope.rms += (scope.buf[0][i]*scope.buf[0][i]);
+	scope.rms = sqrt(scope.rms/ADC_bufsize);
 }
 
 

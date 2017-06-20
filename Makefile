@@ -21,8 +21,9 @@ EXECUTABLE = $(OUTDIR)/$(PROJECT).elf
 MAP_FILE = $(OUTDIR)/$(PROJECT).map
 
 SRC_DIR  =	 Drivers/STM32F4xx_HAL_Driver/Src \
-			 Src \
-			 Src/ui
+			 Src/ui \
+			 Src 
+			 
 
 INC_DIR = 	 Drivers/CMSIS/Device/ST/STM32F4xx/Include \
 			 Drivers/CMSIS/Include \
