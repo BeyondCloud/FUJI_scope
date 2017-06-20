@@ -1,5 +1,20 @@
 #include "scope.h"
+#include <math.h>
+
+#define max(a,b) \
+   ({ __typeof__ (a) _a = (a); \
+       __typeof__ (b) _b = (b); \
+     _a > _b ? _a : _b; })
+#define min(a,b) \
+   ({ __typeof__ (a) _a = (a); \
+       __typeof__ (b) _b = (b); \
+     _a < _b ? _a : _b; })
+
 scope_t scope;
+uint16_t clamp(uint16_t x, uint16_t lower, uint16_t upper)
+{
+    return min(upper, max(x, lower));
+}
 void updateMax()
 {
 	int i;

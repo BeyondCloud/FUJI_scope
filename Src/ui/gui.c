@@ -20,7 +20,7 @@
 
 
 #define TOP_UI_Y	30
-#define DOWN_UI_Y	200 //240-40
+#define BOTTOM_UI_Y	200 //240-40
 
 
 #define DSO_DISP_W	320
@@ -35,7 +35,9 @@
 #define T_Div_List_ID 10
 #define V_Div_List_ID 11
 extern scope_t scope;
+uint16_t prev_draw[ADC_bufsize]= {120};
 
+int TIME_STEP=10;
 
 int Trg_Y_val=120;
 
@@ -860,10 +862,6 @@ static void createPagePage0(void)
 	gwinListSetSelected(T_Div_List, 3, FALSE);
 	gwinListSetSelected(T_Div_List, 4, FALSE);
 	gwinListSetSelected(T_Div_List, 5, FALSE);
-
-
-
-
 }
 
 
@@ -882,55 +880,43 @@ void guiShowPage(unsigned pageIndex)
 		break;
 	}
 }
-int use_buf=0;
+uint16_t getRemapADC()
+{
+  //ADC_val =0~ 4096
+  //linear map 0~4096 to 30~200,also flip Y vertically    
+  uint16_t ADC_val = HAL_ADC_GetValue(&hadc1);
+  uint16_t remap = BOTTOM_UI_Y - ((ADC_val)*DSO_DISP_H/4096);
+  //ensure data draw won't overwite UI
+  return clamp(remap,TOP_UI_Y,BOTTOM_UI_Y);
+}
 void waveDisplay()
 {
-	/*
-		int i;
- 	for(i = 0; i < 320; i++) {
-        gdispDrawPixel(i, 120+80*cos(2*M_PI*i/200),White);
-    }
-    */
-
-  //uint16_t ADC_val=0;
-  uint16_t smp_cnt = 0;
-
-  uint16_t buf_i=0;
+  uint16_t adc_cnt = 0;
   //Assume 42MHz sample rate---> down scale to 420Hz
-  char str[32];
-  int i;
-  __IO uint16_t ADC_val;
-  while(!UI_data_ready)
+  scope.buf[0][0] = getRemapADC();
+  int x = 1;
+  //get 320 adc data, draw scope 
+  while(TRUE)
   {
-
-  	ADC_val = HAL_ADC_GetValue(&hadc1);
-    smp_cnt++;
-    if(smp_cnt > 10){
-      if(buf_i==ADC_bufsize)
-      {
-        use_buf = !use_buf;
-        for(i=0;i<(ADC_bufsize-1);i++)
-        {
-          gdispDrawLine( i,scope.buf[use_buf][i],i,scope.buf[use_buf][i+1],Black);
-        }
-        use_buf = !use_buf;
-        
-        for(i=0;i<(ADC_bufsize-1);i++)
-        {
-          gdispDrawLine( i,scope.buf[use_buf][i],i,scope.buf[use_buf][i+1],Green);
-        }
-        use_buf = !use_buf;
-        UI_data_ready = TRUE;
-        updateMeasData();
-       break;
+  	if(adc_cnt > TIME_STEP)
+  	  {
+  	  	 
+  	  	 scope.buf[0][x] = getRemapADC();
+  	  	 gdispDrawLine( x,prev_draw[x-1],x,prev_draw[x],Black);
+      	 gdispDrawLine( x,scope.buf[0][x-1],x,scope.buf[0][x],Green);
+      	 if(x==ADC_bufsize-1) //buffer 320 ready
+   			break;
+   	     x++;
+   		 adc_cnt = 0;
+  	  }
+  	  	adc_cnt++;
+  	  
+   }
+   int i;
+   for(i=0;i<ADC_bufsize;i++)
+   		prev_draw[i]= scope.buf[0][i];
+   	updateMeasData();
        
-      }
-      scope.buf[use_buf][buf_i] = (ADC_val)*240/4096;
-      buf_i++;
-      smp_cnt = 0;
-    }
-  }
-  
 }
 
 void updateMeasData()
@@ -948,20 +934,15 @@ void updateMeasData()
 	//sprintf(updateVal,"%0.3f",getMax());
 	float2str(getRMS(),val_str,3);
 	gwinSetText(CH1_RMS_Label_Txt,val_str,TRUE);
-
-
 	float2str(getMax(),val_str,3);
 	gwinSetText(CH1_Max_Label_Txt,val_str,TRUE);
-
 	float2str(getMin(),val_str,3);
 	gwinSetText(CH1_Min_Label_Txt,val_str,TRUE);
-
 	float2str(getP2P(),val_str,3);
 	gwinSetText(CH1_PP_Label_Txt,val_str,TRUE);
 	float2str(getPK(),val_str,3);
 	gwinSetText(CH1_Pk_Label_Txt,val_str,TRUE);	
 	
-	UI_data_ready = FALSE;
 }
 
 
@@ -993,37 +974,6 @@ void guiCreate(void)
 
 	guiShowPage(0);
 
-
-
-	//draw ADC data
-
-/*
-   float val=0;
-    char str[16];
-     for(;;)
-  {
-
-    val+=0.001;
-   // sprintf(str, "%.3f", val);
-  //	snprintf(str, sizeof(str), "%.3f", val);
-
-  float2str(ADC_val,str,3);
-
-   LCD_print(10, 30, str);
-    osDelay(300);
-    LCD_printColor(10, 30, str, Black);
-   // LCD_Clear(Black);
-  }
-*/
-	
-
-
-/*
-	int i;
- 	for(i = 0; i < 320; i++) {
-        gdispDrawPixel(i, 120+80*cos(2*M_PI*i/200),White);
-    }
-*/
  
 }
 
@@ -1112,7 +1062,7 @@ void guiEventLoop(void)
 				{
 					case Y_Trg_Button_ID:
 						pem = (GEventMouse *)pe;
-					 	if(pem->y >TOP_UI_Y && pem->y< DOWN_UI_Y)
+					 	if(pem->y >TOP_UI_Y && pem->y< BOTTOM_UI_Y)
 					 	{
 							//Clean previous draw
 							drawDotLineHV(0, Trg_Y_val, 320, Trg_Y_val, Black);
