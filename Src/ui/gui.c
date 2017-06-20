@@ -34,9 +34,11 @@
 
 #define T_Div_List_ID 10
 #define V_Div_List_ID 11
+extern scope_t scope;
 
 
 int Trg_Y_val=120;
+
 // GListeners
 GListener glistener;
 

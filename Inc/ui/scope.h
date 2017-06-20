@@ -1,9 +1,9 @@
-#ifndef __SCOPE_H__
-#define __SCOPE_H__
+#ifndef __SCOPE_H
+#define __SCOPE_H
 
 #include "stm32f4xx_hal.h"
 #define ADC_bufsize 320
-struct scope_t
+typedef struct
 {
 	uint16_t buf[2][ADC_bufsize];
 	float max;
@@ -11,30 +11,20 @@ struct scope_t
 	float p2p;
 	float pk;
 	float rms;
-	/*
-	scope_t scope
-    {
-		buf[2][ADC_bufsize]={};
-		max=0;
-		min=0;
-		p2p=0;
-		min=0;
-		pk=0;
-		rms-0;
-    }*/
-}scope;
+}scope_t;
 
 void updateMax();
 void updateMin();
 void updateP2P();
 void updatePK();
 void updateRMS();
-float getMax(){return scope.max;};
-float getMin(){return scope.min;};
-float getP2P(){return scope.p2p;};
-float getPK(){return scope.pk;};
-float getRMS(){return scope.rms;};
+float getMax();
+float getMin();
+float getP2P();
+float getPK();
+float getRMS();
 
+/*
 void updateMax()
 {
 	int i;
@@ -69,5 +59,5 @@ void updateRMS()
 }
 
 
-
+*/
 #endif

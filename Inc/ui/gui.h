@@ -74,7 +74,6 @@ extern GHandle CH1_P_Label_Txt;
 extern GHandle Label_CH2;
 extern GHandle CH2_Label;
 
-
 // Function Prototypes
 
 
