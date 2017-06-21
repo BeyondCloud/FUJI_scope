@@ -3,6 +3,7 @@
 
 #include "stm32f4xx_hal.h"
 #define ADC_bufsize 320
+
 typedef struct
 {
 	int adc_buf[2][ADC_bufsize];
@@ -21,7 +22,7 @@ static inline float ADC_to_V(int adc)
 {
     return ((float)adc)*ADC_Vmax/4096.0;
 }
- static inline void updateMax()
+static inline void updateMax()
 {
 	int i;
 	int max=0;

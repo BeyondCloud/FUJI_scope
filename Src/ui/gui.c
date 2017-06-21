@@ -42,7 +42,7 @@ int Trg_cnt=0;
 int TIME_STEP=10;
 int Trg_Y_val=120;
 int Trg_pixel_range_PM=2;//PM means plus minus
-
+bool lst_opened= FALSE;
 // GListeners
 GListener glistener;
 
@@ -852,12 +852,12 @@ static void createPagePage0(void)
 	gwinListSetScroll(T_Div_List, scrollSmooth);
 	gwinSetFont(T_Div_List, dejavu_sans_12);
 	gwinRedraw(T_Div_List);
-    gwinListAddItem(T_Div_List, "10us", TRUE);
-    gwinListAddItem(T_Div_List, "25us", TRUE);
-    gwinListAddItem(T_Div_List, "50us", TRUE);
-    gwinListAddItem(T_Div_List, "100us", TRUE);
-    gwinListAddItem(T_Div_List, "500us", TRUE);
-    gwinListAddItem(T_Div_List, "1ms", TRUE);
+    gwinListAddItem(T_Div_List, "100", TRUE);
+    gwinListAddItem(T_Div_List, "30", TRUE);
+    gwinListAddItem(T_Div_List, "10", TRUE);
+    gwinListAddItem(T_Div_List, "5", TRUE);
+    gwinListAddItem(T_Div_List, "3", TRUE);
+    gwinListAddItem(T_Div_List, "1", TRUE);
 	gwinListSetSelected(T_Div_List, 0, FALSE);
 	gwinListSetSelected(T_Div_List, 1, FALSE);
 	gwinListSetSelected(T_Div_List, 2, FALSE);
@@ -936,24 +936,28 @@ void waveDisplay()
   	  	adc_cnt++;
    }
    //now draw your wave 
-   redraw_grid();
-  
-   for(x=0;x<ADC_bufsize;x++)
+      if(!lst_opened)
    {
-   		cur_draw[x] =  ADC_to_screenY(scope.adc_buf[0][x]);
-   }
-   for(x=1;x<ADC_bufsize;x++)
-   {
-   		gdispDrawLine( x,prev_draw[x-1],x,prev_draw[x],Black);
-      	gdispDrawLine( x,cur_draw[x-1],x,cur_draw[x],Green);
-   }
-   for(x=0;x<ADC_bufsize;x++)
-   {
-   		prev_draw[x]= cur_draw[x];
-   }
-   	updateMeasData();
-   	redraw_cursor();
-   	
+		redraw_grid();
+		for(x=0;x<ADC_bufsize;x++)
+		{
+			cur_draw[x] =  ADC_to_screenY(scope.adc_buf[0][x]);
+		}
+
+		for(x=1;x<ADC_bufsize;x++)
+		{
+			gdispDrawLine( x,prev_draw[x-1],x,prev_draw[x],Black);
+		  	gdispDrawLine( x,cur_draw[x-1],x,cur_draw[x],Green);
+		}
+
+
+		for(x=0;x<ADC_bufsize;x++)
+		{
+			prev_draw[x]= cur_draw[x];
+		}
+		updateMeasData();
+		redraw_cursor();
+   	}
        
 }
 
@@ -1055,12 +1059,14 @@ inline void btn_event(uint16_t tag)
 		case T_Div_Button_ID:
 			if(gwinGetTag(*opened_gh) == V_Div_List_ID)
 				gwinSetVisible( V_Div_List,FALSE);
+			lst_opened = TRUE;
 			gwinSetVisible(T_Div_List, TRUE);
 			opened_gh = &T_Div_List;
 		break;
 		case V_Div_Button_ID:
 			if(gwinGetTag(*opened_gh) == T_Div_List_ID)
 				gwinSetVisible( T_Div_List,FALSE);
+			lst_opened = TRUE;
 			gwinSetVisible(V_Div_List, TRUE);
 			opened_gh = &V_Div_List;
 		break;	
@@ -1073,15 +1079,14 @@ inline void btn_event(uint16_t tag)
 inline void lst_event(GHandle gh,uint16_t tag,GEvent* pe)
 {
 	char* chp = gwinListItemGetText(gh,((GEventGWinList *)pe)->item);
+	int i;
+	sscanf(chp, "%d", &i);			
 	switch(tag)
 	{
+
 		case T_Div_List_ID:
 			gwinSetText(T_Div_Label,chp,TRUE);	
-			if( strcmp(chp,"1ms") == 0)
-			{
-				//gdispFillArea(0,TOP_UI_Y,320,DSO_DISP_H, Black);
-		        //Trg_Y_val = 120;
-			}
+			TIME_STEP=i; //3.5/6.5	//3200*3.5/6.5---500Hz
 		break;
 		case V_Div_List_ID:
 			gwinSetText(V_Div_Label,chp,TRUE);	
@@ -1124,6 +1129,8 @@ void guiEventLoop(void)
 				if(gwinListItemIsSelected(gh, ((GEventGWinList *)pe)->item))
 				{
 					lst_event(gh,tag,pe);
+					lst_opened = FALSE;
+					gdispFillArea(0,TOP_UI_Y,320,DSO_DISP_H,Black);
 					gwinSetVisible(gh, FALSE);
 				}
 			break;
@@ -1150,6 +1157,9 @@ void guiEventLoop(void)
 						if(gwinListItemIsSelected(*opened_gh, ((GEventGWinList *)pe)->item))
 						{
 							lst_event(*opened_gh,tag,pe);
+							lst_opened = FALSE;
+							gdispFillArea(0,TOP_UI_Y,320,DSO_DISP_H,Black);
+					
 							gwinSetVisible(*opened_gh, FALSE);
 							opened_gh = NULL;
 						}
