@@ -668,7 +668,10 @@ void 	float2str( float f,char *str,int digit)
     strcat(str, remain_str);
 
 }
-
+void int2str( int val,char *str)
+{
+    sprintf(str,"%d",val);
+}
 void LCD_printColor(uint16_t Xpos, uint16_t Ypos, char *str, uint16_t Color)
 {
 	LCD_printColorFont(Xpos, Ypos, str, Color , Default_Font);

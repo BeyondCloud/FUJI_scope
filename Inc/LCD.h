@@ -168,7 +168,7 @@ void putCharFont( uint16_t Xpos, uint16_t Ypos, uint8_t ASCII, uint16_t charColo
 void LCD_print(uint16_t Xpos, uint16_t Ypos, char *str);
 //print float
 void 	float2str( float f,char *str,int digit);
-
+void int2str( int val,char *str);
 void LCD_printColor(uint16_t Xpos, uint16_t Ypos, char *str, uint16_t Color);
 void LCD_printColorFont(uint16_t Xpos, uint16_t Ypos, char *str, uint16_t Color, uint16_t FONTx);
 

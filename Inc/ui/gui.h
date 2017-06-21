@@ -14,6 +14,28 @@
 
 #define DOT_ON 2
 #define DOT_OFF 3
+#define TOP_UI_Y	30
+#define BOTTOM_UI_Y	200 //240-40
+#define DSO_CENTER_Y (BOTTOM_UI_Y+TOP_UI_Y)/2
+
+
+#define DSO_DISP_W	320
+#define DSO_DISP_H	170
+
+
+#define T_Div_Button_ID 0
+#define V_Div_Button_ID 1
+#define Y_Trg_Button_ID 2
+#define X_A_Button_ID 3
+#define X_B_Button_ID 4
+#define Y_A_Button_ID 5
+#define Y_B_Button_ID 6
+
+
+#define T_Div_List_ID 10
+#define V_Div_List_ID 11
+#define VERTI 0
+#define HORIZ 1
 
 // GListeners
 extern GListener glistener;
@@ -73,7 +95,9 @@ extern GHandle CH1_P_Label_Txt;
 
 extern GHandle Label_CH2;
 extern GHandle CH2_Label;
-
+extern uint16_t ADC_buffer[][320];
+extern float ADC_Vmax;
+extern int TIME_STEP;
 // Function Prototypes
 
 
@@ -83,9 +107,16 @@ void guiShowPage(unsigned pageIndex);
 void guiEventLoop(void);
 void updateMeasData(void);
 
-
-extern uint16_t ADC_buffer[][320];
-extern float ADC_Vmax;
+static inline float screenY_to_V(int Y)
+{
+	//200-->0 ,30->3
+	return (DSO_DISP_H-(Y-TOP_UI_Y))*ADC_Vmax/DSO_DISP_H;
+}
+static inline int screenX_to_T(int X)
+{
+	//200-->0 ,30->3
+	return X*TIME_STEP;
+}
 static bool UI_data_ready;
 
 #endif /* _GUI_H_ */
