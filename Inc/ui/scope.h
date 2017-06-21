@@ -16,18 +16,19 @@ typedef struct
 	
 }scope_t;
 
-void updateMax();
-void updateMin();
-void updateP2P();
-void updatePK();
-void updateRMS();
-void updateAVG();
+ void updateMax();
+ void updateMin();
+ void updateP2P();
+ void updatePK();
+ void updateRMS();
+ void updateAVG();
 
-float getMax();
-float getMin();
-float getP2P();
-float getPK();
-float getRMS();
-float getAVG();
-
+/*
+ float getMax();
+ float getMin();
+ float getP2P();
+ float getPK();
+ float getRMS();
+ float getAVG();
+*/
 #endif

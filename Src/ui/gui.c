@@ -884,8 +884,8 @@ void guiShowPage(unsigned pageIndex)
 }
 inline float screenY_to_V(int Y)
 {
-	//200-->0 ,30->3.3
-	return (DSO_DISP_H-(Y-TOP_UI_Y))*screen_Vscale/DSO_DISP_H;
+	//200-->0 ,30->3
+	return (DSO_DISP_H-(Y-TOP_UI_Y))*ADC_Vmax/DSO_DISP_H;
 }
 //the data we ready to put inside cur_draw
 inline int ADC_to_screenY(int ADC_val)
@@ -935,8 +935,9 @@ void waveDisplay()
   	  }
   	  	adc_cnt++;
    }
-   redraw_grid();
    //now draw your wave 
+   redraw_grid();
+  
    for(x=0;x<ADC_bufsize;x++)
    {
    		cur_draw[x] =  ADC_to_screenY(scope.adc_buf[0][x]);
@@ -965,17 +966,17 @@ void updateMeasData()
 	updateRMS();
 	updateAVG();
 	char val_str[16];
-	float2str(getRMS(),val_str,3);
+	float2str(scope.rms,val_str,3);
 	gwinSetText(CH1_RMS_Label_Txt,val_str,TRUE);
-	float2str(getMax(),val_str,3);
+	float2str(scope.max,val_str,3);
 	gwinSetText(CH1_Max_Label_Txt,val_str,TRUE);
-	float2str(getMin(),val_str,3);
+	float2str(scope.min,val_str,3);
 	gwinSetText(CH1_Min_Label_Txt,val_str,TRUE);
-	float2str(getP2P(),val_str,3);
+	float2str(scope.p2p,val_str,3);
 	gwinSetText(CH1_PP_Label_Txt,val_str,TRUE);
-	float2str(getPK(),val_str,3);
+	float2str(scope.pk,val_str,3);
 	gwinSetText(CH1_Pk_Label_Txt,val_str,TRUE);	
-	float2str(getAVG(),val_str,3);
+	float2str(scope.avg,val_str,3);
 	gwinSetText(CH1_AVG_Label_Txt,val_str,TRUE);	
 	float2str(Trg_cnt,val_str,1);
 	gwinSetText(CH1_SF_Label_Txt,val_str,TRUE);	
@@ -990,6 +991,7 @@ void redraw_cursor()
 void redraw_grid()
 {
 	//horizontal grid
+	/*
 	float y_step=DSO_DISP_H/6;
 	int i =0;
 	float cur_y=y_step+TOP_UI_Y;
@@ -1001,6 +1003,14 @@ void redraw_grid()
 	//vertical grid
 	for(i=0;i<320;i+=32)
 		drawDotLineHV(i,TOP_UI_Y, i,BOTTOM_UI_Y, navy_studio);
+	*/
+	int x,y;
+	for(x = 32;x<320;x+=32)
+	{
+		for(y = 59;y<200;y+=29)
+			gdispDrawPixel(x, y, navy_studio);
+	}
+
 							
 }
 
