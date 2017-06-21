@@ -17,7 +17,7 @@ typedef struct
 }scope_t;
 extern float screen_Vscale;
 extern scope_t scope;
-extern int ADC_Vmax;
+extern float ADC_Vmax;
 static inline float ADC_to_V(int adc)
 {
     return ((float)adc)*ADC_Vmax/4096.0;

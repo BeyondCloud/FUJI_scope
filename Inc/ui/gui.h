@@ -33,9 +33,9 @@ extern GHandle V_Div_List;
 
 extern GHandle Label_X;
 extern GHandle X_A_Label;
-extern GHandle X_A_Label_Txt;
+extern GHandle X_A_Button;
 extern GHandle X_B_Label;
-extern GHandle X_B_Label_Txt;
+extern GHandle X_B_Button;
 extern GHandle X_F_Label;
 extern GHandle X_F_Label_Txt;
 extern GHandle X_AB_Label;
@@ -43,9 +43,9 @@ extern GHandle X_AB_Label_Txt;
 
 extern GHandle Label_Y;
 extern GHandle Y_A_Label;
-extern GHandle Y_A_Label_Txt;
+extern GHandle Y_A_Button;
 extern GHandle Y_B_Label;
-extern GHandle Y_B_Label_Txt;
+extern GHandle Y_B_Button;
 extern GHandle Y_AB_Label;
 extern GHandle Y_AB_Label_Txt;
 extern GHandle Y_Trg_Label;
@@ -85,7 +85,7 @@ void updateMeasData(void);
 
 
 extern uint16_t ADC_buffer[][320];
-extern int ADC_Vmax;
+extern float ADC_Vmax;
 static bool UI_data_ready;
 
 #endif /* _GUI_H_ */

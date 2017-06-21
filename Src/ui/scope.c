@@ -10,7 +10,7 @@
        __typeof__ (b) _b = (b); \
      _a < _b ? _a : _b; })
 scope_t scope;
-int ADC_Vmax=3;
+float ADC_Vmax=3.0; //this cannot be int or Y to V wont show float 
 
 
 int clamp(int x, int lower, int upper)

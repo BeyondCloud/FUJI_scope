@@ -31,16 +31,29 @@
 #define T_Div_Button_ID 0
 #define V_Div_Button_ID 1
 #define Y_Trg_Button_ID 2
+#define X_A_Button_ID 3
+#define X_B_Button_ID 4
+#define Y_A_Button_ID 5
+#define Y_B_Button_ID 6
 
 
 #define T_Div_List_ID 10
 #define V_Div_List_ID 11
+#define VERTI 0
+#define HORIZ 1
+
+
 extern scope_t scope;
 int cur_draw[ADC_bufsize]= {120};
 int prev_draw[ADC_bufsize]= {120};
 int Trg_cnt=0;
 int TIME_STEP=10;
-int Trg_Y_val=120;
+int Trg_Y_val=DSO_CENTER_Y;
+int X_A_val=100;
+int X_B_val=300;
+int Y_A_val=50;
+int Y_B_val=180;
+
 int Trg_pixel_range_PM=2;//PM means plus minus
 bool lst_opened= FALSE;
 // GListeners
@@ -62,9 +75,9 @@ GHandle V_Div_List;
 
 GHandle Label_X;
 GHandle X_A_Label;
-GHandle X_A_Label_Txt;
+GHandle X_A_Button;
 GHandle X_B_Label;
-GHandle X_B_Label_Txt;
+GHandle X_B_Button;
 GHandle X_F_Label;
 GHandle X_F_Label_Txt;
 GHandle X_AB_Label;
@@ -72,9 +85,9 @@ GHandle X_AB_Label_Txt;
 
 GHandle Label_Y;
 GHandle Y_A_Label;
-GHandle Y_A_Label_Txt;
+GHandle Y_A_Button;
 GHandle Y_B_Label;
-GHandle Y_B_Label_Txt;
+GHandle Y_B_Button;
 GHandle Y_AB_Label;
 GHandle Y_AB_Label_Txt;
 GHandle Y_Trg_Label;
@@ -570,7 +583,7 @@ static void createPagePage0(void)
 	gwinListSetSelected(V_Div_List, 2, FALSE);
 	gwinListSetSelected(V_Div_List, 3, FALSE);
 
-	// Create label widget: X_A_Label_Txt
+	// Create label widget: X_A_Button
 	wi.g.show = TRUE;
 	wi.g.x = 140;
 	wi.g.y = 0;
@@ -578,15 +591,15 @@ static void createPagePage0(void)
 	wi.g.height = 15;
 	wi.g.parent = ghContainerPage0;
 	wi.text = "0.000";
-	wi.customDraw = gwinLabelDrawJustifiedRight;
+	wi.customDraw = gwinButtonDraw_Normal;
 	wi.customParam = 0;
-	wi.customStyle = &x;
-	X_A_Label_Txt = gwinLabelCreate(0, &wi);
-	gwinLabelSetBorder(X_A_Label_Txt, FALSE);
-	gwinSetFont(X_A_Label_Txt, dejavu_sans_10);
-	gwinRedraw(X_A_Label_Txt);
+	wi.customStyle = &divc;
+	X_A_Button = gwinButtonCreate(0, &wi);
+	gwinSetTag(X_A_Button,X_A_Button_ID);
+	gwinSetFont(X_A_Button, dejavu_sans_10);
+	gwinRedraw(X_A_Button);
 
-	// Create label widget: X_B_Label_Txt
+	// Create label widget: X_B_Button
 	wi.g.show = TRUE;
 	wi.g.x = 140;
 	wi.g.y = 15;
@@ -594,13 +607,16 @@ static void createPagePage0(void)
 	wi.g.height = 15;
 	wi.g.parent = ghContainerPage0;
 	wi.text = "0.000";
-	wi.customDraw = gwinLabelDrawJustifiedRight;
+	wi.customDraw = gwinButtonDraw_Normal;
 	wi.customParam = 0;
-	wi.customStyle = &x;
-	X_B_Label_Txt = gwinLabelCreate(0, &wi);
-	gwinLabelSetBorder(X_B_Label_Txt, FALSE);
-	gwinSetFont(X_B_Label_Txt, dejavu_sans_10);
-	gwinRedraw(X_B_Label_Txt);
+	wi.customStyle = &divc;
+	X_B_Button = gwinButtonCreate(0, &wi);
+	gwinSetTag(X_B_Button,X_B_Button_ID);
+	gwinSetFont(X_B_Button, dejavu_sans_10);
+	gwinRedraw(X_B_Button);
+
+
+
 
 	// Create label widget: X_F_Label_Txt
 	wi.g.show = TRUE;
@@ -634,7 +650,7 @@ static void createPagePage0(void)
 	gwinSetFont(X_AB_Label_Txt, dejavu_sans_10);
 	gwinRedraw(X_AB_Label_Txt);
 
-	// Create label widget: Y_A_Label_Txt
+	// Create label widget: Y_A_Button
 	wi.g.show = TRUE;
 	wi.g.x = 240;
 	wi.g.y = 0;
@@ -642,15 +658,15 @@ static void createPagePage0(void)
 	wi.g.height = 15;
 	wi.g.parent = ghContainerPage0;
 	wi.text = "0.000";
-	wi.customDraw = gwinLabelDrawJustifiedRight;
+	wi.customDraw = gwinButtonDraw_Normal;
 	wi.customParam = 0;
-	wi.customStyle = &y;
-	Y_A_Label_Txt = gwinLabelCreate(0, &wi);
-	gwinLabelSetBorder(Y_A_Label_Txt, FALSE);
-	gwinSetFont(Y_A_Label_Txt, dejavu_sans_10);
-	gwinRedraw(Y_A_Label_Txt);
+	wi.customStyle = &divc;
+	Y_A_Button = gwinButtonCreate(0, &wi);
+	gwinSetTag(Y_A_Button,Y_A_Button_ID);
+	gwinSetFont(Y_A_Button, dejavu_sans_10);
+	gwinRedraw(Y_A_Button);
 
-	// Create label widget: Y_B_Label_Txt
+	// Create label widget: Y_B_Button
 	wi.g.show = TRUE;
 	wi.g.x = 240;
 	wi.g.y = 15;
@@ -658,13 +674,13 @@ static void createPagePage0(void)
 	wi.g.height = 15;
 	wi.g.parent = ghContainerPage0;
 	wi.text = "0.000";
-	wi.customDraw = gwinLabelDrawJustifiedRight;
+	wi.customDraw = gwinButtonDraw_Normal;
 	wi.customParam = 0;
-	wi.customStyle = &y;
-	Y_B_Label_Txt = gwinLabelCreate(0, &wi);
-	gwinLabelSetBorder(Y_B_Label_Txt, FALSE);
-	gwinSetFont(Y_B_Label_Txt, dejavu_sans_10);
-	gwinRedraw(Y_B_Label_Txt);
+	wi.customStyle = &divc;
+	Y_B_Button = gwinButtonCreate(0, &wi);
+	gwinSetTag(Y_B_Button,Y_B_Button_ID);
+	gwinSetFont(Y_B_Button, dejavu_sans_10);
+	gwinRedraw(Y_B_Button);
 
 	// Create label widget: Y_AB_Label_Txt
 	wi.g.show = TRUE;
@@ -689,7 +705,7 @@ static void createPagePage0(void)
 	wi.g.width = 30;
 	wi.g.height = 15;
 	wi.g.parent = ghContainerPage0;
-	wi.text = "0.000";
+	wi.text = "1.500";
 	wi.customDraw = gwinButtonDraw_Normal;
 	wi.customParam = 0;
 	wi.customStyle = &divc;
@@ -697,12 +713,6 @@ static void createPagePage0(void)
 	gwinSetTag(Y_Trg_Button,Y_Trg_Button_ID);
 	gwinSetFont(Y_Trg_Button ,dejavu_sans_10);
 	gwinRedraw(Y_Trg_Button);
-
-
-
-
-
-
 
 	// Create label widget: CH1_RMS_Label_Txt
 
@@ -887,6 +897,11 @@ inline float screenY_to_V(int Y)
 	//200-->0 ,30->3
 	return (DSO_DISP_H-(Y-TOP_UI_Y))*ADC_Vmax/DSO_DISP_H;
 }
+inline float screenX_to_T(int X)
+{
+	//200-->0 ,30->3
+	return X*TIME_STEP;
+}
 //the data we ready to put inside cur_draw
 inline int ADC_to_screenY(int ADC_val)
 {
@@ -938,7 +953,7 @@ void waveDisplay()
    //now draw your wave 
       if(!lst_opened)
    {
-		redraw_grid();
+		//redraw_grid();
 		for(x=0;x<ADC_bufsize;x++)
 		{
 			cur_draw[x] =  ADC_to_screenY(scope.adc_buf[0][x]);
@@ -990,12 +1005,16 @@ void updateMeasData()
 void redraw_cursor()
 {
 	drawDotLineHV(0, Trg_Y_val, 320, Trg_Y_val, Red);
-							
-}
+	drawDotLineHV(0, Y_A_val, 320, Y_A_val, Yellow);
+	drawDotLineHV(0, Y_B_val, 320, Y_B_val, Yellow);
+	drawDotLineHV(X_A_val,TOP_UI_Y, X_A_val,BOTTOM_UI_Y, Yellow);
+	drawDotLineHV(X_B_val,TOP_UI_Y, X_B_val,BOTTOM_UI_Y, Yellow);
+		
+}/*
 void redraw_grid()
 {
 	//horizontal grid
-	/*
+	
 	float y_step=DSO_DISP_H/6;
 	int i =0;
 	float cur_y=y_step+TOP_UI_Y;
@@ -1007,17 +1026,17 @@ void redraw_grid()
 	//vertical grid
 	for(i=0;i<320;i+=32)
 		drawDotLineHV(i,TOP_UI_Y, i,BOTTOM_UI_Y, navy_studio);
-	*/
+	
+	
 	int x,y;
 	for(x = 32;x<320;x+=32)
 	{
 		for(y = 59;y<200;y+=29)
 			gdispDrawPixel(x, y, navy_studio);
 	}
-
-							
+						
 }
-
+*/
 
 
 void guiCreate(void)
@@ -1073,6 +1092,19 @@ inline void btn_event(uint16_t tag)
 		case Y_Trg_Button_ID:
 			opened_gh = &Y_Trg_Button;
 		break;
+		case Y_A_Button_ID:
+			opened_gh = &Y_A_Button;
+		break;
+		case Y_B_Button_ID:
+			opened_gh = &Y_B_Button;
+		break;
+		case X_A_Button_ID:
+			opened_gh = &X_A_Button;
+		break;
+		case X_B_Button_ID:
+			opened_gh = &X_B_Button;
+		break;
+
 	}
 }
 //Set text if select item
@@ -1080,11 +1112,10 @@ inline void lst_event(GHandle gh,uint16_t tag,GEvent* pe)
 {
 	char* chp = gwinListItemGetText(gh,((GEventGWinList *)pe)->item);
 	int i;
-	sscanf(chp, "%d", &i);			
 	switch(tag)
 	{
-
 		case T_Div_List_ID:
+			sscanf(chp, "%d", &i);			
 			gwinSetText(T_Div_Label,chp,TRUE);	
 			TIME_STEP=i; //3.5/6.5	//3200*3.5/6.5---500Hz
 		break;
@@ -1095,7 +1126,26 @@ inline void lst_event(GHandle gh,uint16_t tag,GEvent* pe)
 			
 	}
 }
-
+inline void resetCursor(GHandle gh,int *target_val,GEventMouse *pem,int HV)
+{
+	if(pem->y < TOP_UI_Y || pem->y > BOTTOM_UI_Y)
+			return;
+	char val_str[16];
+		//Clean previous draw
+	if(HV==HORIZ)
+	{
+		drawDotLineHV(0, *target_val, 320,*target_val, Black);
+		*target_val = pem->y;
+		float2str(screenY_to_V(pem->y),val_str,3);
+	}
+	else
+	{
+		drawDotLineHV(*target_val, TOP_UI_Y,*target_val,BOTTOM_UI_Y, Black);
+		*target_val = pem->x;
+		float2str(screenX_to_T(pem->x),val_str,0);
+	}
+	gwinSetText(gh,val_str,TRUE);	
+}
 
 void guiEventLoop(void)
 {
@@ -1138,19 +1188,31 @@ void guiEventLoop(void)
 				if(opened_gh==NULL)
 					break;
 				tag = gwinGetTag(*opened_gh);
-				
+				pem = (GEventMouse *)pe;	 	
 				switch(tag)
 				{
 					case Y_Trg_Button_ID:
-						pem = (GEventMouse *)pe;
-					 	if(pem->y >TOP_UI_Y && pem->y< BOTTOM_UI_Y)
-					 	{
-							//Clean previous draw
-							drawDotLineHV(0, Trg_Y_val, 320, Trg_Y_val, Black);
-							Trg_Y_val = pem->y;
-							float2str(screenY_to_V(Trg_Y_val),val_str,3);
-							gwinSetText(Y_Trg_Button,val_str,TRUE);	
-					 	}
+						resetCursor(Y_Trg_Button,&Trg_Y_val,pem,HORIZ);
+					break;
+					case Y_A_Button_ID:
+						if(pem->y <=Y_B_val)
+							break;
+						resetCursor(Y_A_Button,&Y_A_val,pem,HORIZ);
+					break;
+					case Y_B_Button_ID:
+						if(pem->y >=Y_A_val)
+							break;
+						resetCursor(Y_B_Button,&Y_B_val,pem,HORIZ);
+					break;
+					case X_A_Button_ID:
+						if(pem->x >=X_B_val)
+							break;
+						resetCursor(X_A_Button,&X_A_val,pem,VERTI);
+					break;
+					case X_B_Button_ID:
+						if(pem->x <=X_A_val)
+							break;
+						resetCursor(X_B_Button,&X_B_val,pem,VERTI);
 					break;
 					case V_Div_List_ID:
 					case T_Div_List_ID:
