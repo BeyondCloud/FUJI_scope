@@ -1195,13 +1195,13 @@ void guiEventLoop(void)
 						resetCursor(Y_Trg_Button,&Trg_Y_val,pem,HORIZ);
 					break;
 					case Y_A_Button_ID:
-						if(pem->y <=Y_B_val)
+						if(pem->y >=Y_B_val)
 							break;
 						resetCursor(Y_A_Button,&Y_A_val,pem,HORIZ);
 					break;
 					case Y_B_Button_ID:
-						if(pem->y >=Y_A_val)
-							break;
+						if(pem->y <=Y_A_val)
+							break
 						resetCursor(Y_B_Button,&Y_B_val,pem,HORIZ);
 					break;
 					case X_A_Button_ID:
