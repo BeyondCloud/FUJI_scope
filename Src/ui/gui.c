@@ -689,7 +689,7 @@ static void createPagePage0(void)
 	wi.g.width = 30;
 	wi.g.height = 15;
 	wi.g.parent = ghContainerPage0;
-	wi.text = "0.000";
+	wi.text = "";
 	wi.customDraw = gwinLabelDrawJustifiedRight;
 	wi.customParam = 0;
 	wi.customStyle = &y;
@@ -1134,17 +1134,26 @@ inline void resetCursor(GHandle gh,int *target_val,GEventMouse *pem,int HV)
 		//Clean previous draw
 	if(HV==HORIZ)
 	{
+		//update button text
 		drawDotLineHV(0, *target_val, 320,*target_val, Black);
 		*target_val = pem->y;
 		float2str(screenY_to_V(pem->y),val_str,3);
+		gwinSetText(gh,val_str,TRUE);	
+		//update A-B label text
+		float f = screenY_to_V(Y_A_val) - screenY_to_V(Y_B_val);
+		float2str(f,val_str,3);
+		gwinSetText(Y_AB_Label_Txt,val_str,TRUE);
 	}
 	else
 	{
 		drawDotLineHV(*target_val, TOP_UI_Y,*target_val,BOTTOM_UI_Y, Black);
 		*target_val = pem->x;
 		float2str(screenX_to_T(pem->x),val_str,0);
+		gwinSetText(gh,val_str,TRUE);	
+
 	}
-	gwinSetText(gh,val_str,TRUE);	
+
+	
 }
 
 void guiEventLoop(void)
@@ -1201,7 +1210,7 @@ void guiEventLoop(void)
 					break;
 					case Y_B_Button_ID:
 						if(pem->y <=Y_A_val)
-							break
+							break;
 						resetCursor(Y_B_Button,&Y_B_val,pem,HORIZ);
 					break;
 					case X_A_Button_ID:
