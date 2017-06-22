@@ -118,6 +118,7 @@ static inline int screenX_to_T(int X)
 	return X*TIME_STEP;
 }
 static bool UI_data_ready;
+inline int screenY_to_ADC(int Y);
 
 #endif /* _GUI_H_ */
 

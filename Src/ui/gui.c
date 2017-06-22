@@ -50,12 +50,13 @@ int prev_draw[ADC_bufsize]= {120};
 int Trg_cnt=0;
 int TIME_STEP=10;
 int Trg_Y_val=DSO_CENTER_Y;
+int Trg_ADC_val=2048;
+
 int X_A_val=100;
 int X_B_val=300;
 int Y_A_val=50;
 int Y_B_val=180;
 
-int Trg_pixel_range_PM=2;//PM means plus minus
 bool lst_opened= FALSE;
 bool is_CH_stop=FALSE;
 // GListeners
@@ -942,10 +943,15 @@ inline int ADC_to_screenY(int ADC_val)
   //ensure data draw won't overwite UI
   return clamp(remap,TOP_UI_Y,BOTTOM_UI_Y);
 }
+
+inline int screenY_to_ADC(int Y)
+{
+  return (DSO_DISP_H-(Y-TOP_UI_Y))*4096/DSO_DISP_H;
+}
+
 bool isTriggered(int ADC_data,int prev_ADC_data)
 {
-	int del = abs(ADC_to_screenY(ADC_data)-Trg_Y_val);
-	return ((del<=Trg_pixel_range_PM) &&(prev_ADC_data<=ADC_data));
+	return ((prev_ADC_data<=Trg_ADC_val) &&(ADC_data>=Trg_ADC_val));
 }
 void waveDisplay()
 {
@@ -1240,6 +1246,7 @@ void guiEventLoop(void)
 				{
 					case Y_Trg_Button_ID:
 						resetCursor(Y_Trg_Button,&Trg_Y_val,pem,HORIZ);
+						Trg_ADC_val = screenY_to_ADC(Trg_Y_val);
 					break;
 					case Y_A_Button_ID:
 						if(pem->y >=Y_B_val)
