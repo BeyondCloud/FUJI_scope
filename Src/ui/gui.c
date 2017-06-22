@@ -1024,18 +1024,25 @@ void updateMeasData()
 	updateAVG();
 	char val_str[16];
 	float2str(getRMS(),val_str,3);
+	strcat(val_str,"V||");
 	gwinSetText(CH1_RMS_Label_Txt,val_str,TRUE);
 	float2str(getMax(),val_str,3);
+	strcat(val_str,"V||");
 	gwinSetText(CH1_Max_Label_Txt,val_str,TRUE);
 	float2str(getMin(),val_str,3);
+	strcat(val_str,"V||");
 	gwinSetText(CH1_Min_Label_Txt,val_str,TRUE);
 	float2str(getP2P(),val_str,3);
+	strcat(val_str,"V||");
 	gwinSetText(CH1_PP_Label_Txt,val_str,TRUE);
 	float2str(getPK(),val_str,3);
+	strcat(val_str,"V||");
 	gwinSetText(CH1_Pk_Label_Txt,val_str,TRUE);	
 	float2str(getAVG(),val_str,3);
+	strcat(val_str,"V");
 	gwinSetText(CH1_AVG_Label_Txt,val_str,TRUE);	
 	float2str(Trg_cnt,val_str,1);
+	strcat(val_str,"||");
 	gwinSetText(CH1_SF_Label_Txt,val_str,TRUE);	
 	
 		
