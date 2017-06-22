@@ -1160,12 +1160,19 @@ inline void lst_event(GHandle gh,uint16_t tag,GEvent* pe)
 {
 	char* chp = gwinListItemGetText(gh,((GEventGWinList *)pe)->item);
 	int i;
+	GEventMouse     *pem;
+	pem = (GEventMouse *)pe;
 	switch(tag)
 	{
 		case T_Div_List_ID:
 			sscanf(chp, "%d", &i);			
 			gwinSetText(T_Div_Label,chp,TRUE);	
 			TIME_STEP=i; //3.5/6.5	//3200*3.5/6.5---500Hz
+			pem->x = X_A_val;
+			pem->y = 100;
+			resetCursor(X_A_Button,&X_A_val,pem,VERTI);
+			pem->x = X_B_val;
+			resetCursor(X_B_Button,&X_B_val,pem,VERTI);
 		break;
 		case V_Div_List_ID:
 			gwinSetText(V_Div_Label,chp,TRUE);	
@@ -1196,7 +1203,8 @@ inline void resetCursor(GHandle gh,int *target_val,GEventMouse *pem,int HV)
 		char val_str[16];
 		drawDotLineHV(*target_val, TOP_UI_Y,*target_val,BOTTOM_UI_Y, Black);
 		*target_val = pem->x;
-		int2str(screenX_to_T(pem->x),val_str);
+		int positive_x =  (pem->x>0)?pem->x:0;
+		int2str(screenX_to_T(positive_x),val_str);
 		gwinSetText(gh,val_str,TRUE);
 		int val = screenX_to_T(X_B_val) - screenX_to_T(X_A_val);
 		int2str(val,val_str);
