@@ -1042,8 +1042,10 @@ void updateMeasData()
 	gwinSetText(CH1_SF_Label_Txt,val_str,TRUE);	
 	int2str(screenX_to_T(scope.P),val_str);
 	gwinSetText(CH1_P_Label_Txt,val_str,TRUE);
+	float f = 1/(float)scope.P;
+	float2str(f,val_str,3);
+	gwinSetText(X_F_Label_Txt,val_str,TRUE);
 	
-		
 }
 void redraw_cursor()
 {
