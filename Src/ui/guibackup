@@ -157,7 +157,7 @@ static void createPagePage0(void)
 	wi.g.width = 50;
 	wi.g.height = 15;
 	wi.g.parent = ghContainerPage0;
-	wi.text = "10";
+	wi.text = "10us";
 	wi.customDraw = gwinLabelDrawJustifiedLeft;
 	wi.customParam = 0;
 	wi.customStyle = &divc;
@@ -592,7 +592,7 @@ static void createPagePage0(void)
 	wi.g.width = 30;
 	wi.g.height = 15;
 	wi.g.parent = ghContainerPage0;
-	wi.text = "0.000";
+	wi.text = "";
 	wi.customDraw = gwinButtonDraw_Normal;
 	wi.customParam = 0;
 	wi.customStyle = &divc;
@@ -600,8 +600,9 @@ static void createPagePage0(void)
 	gwinSetTag(X_A_Button,X_A_Button_ID);
 	gwinSetFont(X_A_Button, dejavu_sans_10);
 	gwinRedraw(X_A_Button);
-	int2str(screenX_to_T(X_A_val),init_str);
-	gwinSetText(X_A_Button,init_str,TRUE);	
+	//int2str(screenY_to_V(X_A_val),init_str);
+	//gwinSetText(X_A_val,init_str,TRUE);	
+	
 	
 	// Create label widget: X_B_Button
 	wi.g.show = TRUE;
@@ -610,7 +611,7 @@ static void createPagePage0(void)
 	wi.g.width = 30;
 	wi.g.height = 15;
 	wi.g.parent = ghContainerPage0;
-	wi.text = "0.000";
+	wi.text = "";
 	wi.customDraw = gwinButtonDraw_Normal;
 	wi.customParam = 0;
 	wi.customStyle = &divc;
@@ -618,9 +619,8 @@ static void createPagePage0(void)
 	gwinSetTag(X_B_Button,X_B_Button_ID);
 	gwinSetFont(X_B_Button, dejavu_sans_10);
 	gwinRedraw(X_B_Button);
-	int2str(screenX_to_T(X_B_val),init_str);
-	gwinSetText(X_B_Button,init_str,TRUE);	
-	
+	//int2str(screenY_to_V(X_B_val),init_str);
+	//gwinSetText(X_B_val,init_str,TRUE);	
 	
 
 
@@ -648,7 +648,7 @@ static void createPagePage0(void)
 	wi.g.width = 30;
 	wi.g.height = 15;
 	wi.g.parent = ghContainerPage0;
-	wi.text = "0.000";
+	wi.text = "";
 	wi.customDraw = gwinLabelDrawJustifiedRight;
 	wi.customParam = 0;
 	wi.customStyle = &x;
@@ -656,9 +656,7 @@ static void createPagePage0(void)
 	gwinLabelSetBorder(X_AB_Label_Txt, FALSE);
 	gwinSetFont(X_AB_Label_Txt, dejavu_sans_10);
 	gwinRedraw(X_AB_Label_Txt);
-	int val = screenX_to_T(X_B_val) - screenX_to_T(X_A_val);
-	int2str(val,init_str);
-	gwinSetText(X_AB_Label_Txt,init_str,TRUE);
+	gwinSetText(X_B_val,init_str,TRUE);	
 	
 
 	// Create label widget: Y_A_Button
@@ -669,7 +667,7 @@ static void createPagePage0(void)
 	wi.g.width = 30;
 	wi.g.height = 15;
 	wi.g.parent = ghContainerPage0;
-	wi.text = "0.000";
+	wi.text = "";
 	wi.customDraw = gwinButtonDraw_Normal;
 	wi.customParam = 0;
 	wi.customStyle = &divc;
@@ -677,8 +675,8 @@ static void createPagePage0(void)
 	gwinSetTag(Y_A_Button,Y_A_Button_ID);
 	gwinSetFont(Y_A_Button, dejavu_sans_10);
 	gwinRedraw(Y_A_Button);
-	float2str(screenY_to_V(Y_A_val),init_str,3);
-	gwinSetText(Y_A_Button,init_str,TRUE);	
+	//float2str(screenY_to_V(Y_A_val),init_str,3);
+	//gwinSetText(Y_A_Button,init_str,TRUE);	
 	
 
 	// Create label widget: Y_B_Button
@@ -689,7 +687,7 @@ static void createPagePage0(void)
 	wi.g.width = 30;
 	wi.g.height = 15;
 	wi.g.parent = ghContainerPage0;
-	wi.text = "0.000";
+	wi.text ="";
 	wi.customDraw = gwinButtonDraw_Normal;
 	wi.customParam = 0;
 	wi.customStyle = &divc;
@@ -697,10 +695,11 @@ static void createPagePage0(void)
 	gwinSetTag(Y_B_Button,Y_B_Button_ID);
 	gwinSetFont(Y_B_Button, dejavu_sans_10);
 	gwinRedraw(Y_B_Button);
-	float2str(screenY_to_V(Y_B_val),init_str,3);
-	gwinSetText(Y_B_Button,init_str,TRUE);	
+	//float2str(screenY_to_V(Y_B_val),init_str,3);
+	//gwinSetText(Y_B_Button,init_str,TRUE);	
 	
-	
+
+
 	// Create label widget: Y_AB_Label_Txt
 	wi.g.show = TRUE;
 	wi.g.x = 290;
@@ -708,7 +707,7 @@ static void createPagePage0(void)
 	wi.g.width = 30;
 	wi.g.height = 15;
 	wi.g.parent = ghContainerPage0;
-	wi.text = "0.000";
+	wi.text = "";
 	wi.customDraw = gwinLabelDrawJustifiedRight;
 	wi.customParam = 0;
 	wi.customStyle = &y;
@@ -717,9 +716,8 @@ static void createPagePage0(void)
 	gwinSetFont(Y_AB_Label_Txt, dejavu_sans_10);
 	gwinRedraw(Y_AB_Label_Txt);
 	f = screenY_to_V(Y_A_val) - screenY_to_V(Y_B_val);
-	float2str(f,init_str,3);
-	gwinSetText(Y_AB_Label_Txt,init_str,TRUE);	
-	
+	//float2str(f,init_str,3);
+	//gwinSetText(Y_AB_Label_Txt,init_str,TRUE);	
 	
 
 	// Create label widget: Y_Trg_Button
