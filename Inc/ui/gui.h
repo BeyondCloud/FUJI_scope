@@ -42,7 +42,7 @@ extern GListener glistener;
 
 // extern GHandles
 extern GHandle ghContainerPage0;
-extern GHandle Label_CH;
+extern GHandle Button_CH;
 
 extern GHandle T_Div_Button;
 extern GHandle T_Div_Label;

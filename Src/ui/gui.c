@@ -35,6 +35,7 @@
 #define X_B_Button_ID 4
 #define Y_A_Button_ID 5
 #define Y_B_Button_ID 6
+#define Button_CH_ID 7
 
 
 #define T_Div_List_ID 10
@@ -56,13 +57,14 @@ int Y_B_val=180;
 
 int Trg_pixel_range_PM=2;//PM means plus minus
 bool lst_opened= FALSE;
+bool is_CH_stop=FALSE;
 // GListeners
 GListener glistener;
 
 // GHandles
 GHandle ghContainerPage0;
 
-GHandle Label_CH;
+GHandle Button_CH;
 
 GHandle T_Div_Button;
 GHandle T_Div_Label;
@@ -157,7 +159,7 @@ static void createPagePage0(void)
 	wi.g.width = 50;
 	wi.g.height = 15;
 	wi.g.parent = ghContainerPage0;
-	wi.text = "10";
+	wi.text = "   10";
 	wi.customDraw = gwinLabelDrawJustifiedLeft;
 	wi.customParam = 0;
 	wi.customStyle = &divc;
@@ -224,6 +226,7 @@ static void createPagePage0(void)
 	Label_CH1 = gwinLabelCreate(0, &wi);
 	gwinLabelSetBorder(Label_CH1, FALSE);
 
+
 	// Create label widget: Label_CH2
 	wi.g.show = TRUE;
 	wi.g.x = 0;
@@ -238,7 +241,7 @@ static void createPagePage0(void)
 	Label_CH2 = gwinLabelCreate(0, &wi);
 	gwinLabelSetBorder(Label_CH2, FALSE);
 
-	// Create label widget: Label_CH
+	// Create label widget: Button_CH
 	wi.g.show = TRUE;
 	wi.g.x = 0;
 	wi.g.y = 0;
@@ -246,13 +249,15 @@ static void createPagePage0(void)
 	wi.g.height = 30;
 	wi.g.parent = ghContainerPage0;
 	wi.text = "CH1";
-	wi.customDraw = gwinLabelDrawJustifiedLeft;
+	wi.customDraw = gwinButtonDraw_Normal;
 	wi.customParam = 0;
 	wi.customStyle = &divc;
-	Label_CH = gwinLabelCreate(0, &wi);
-	gwinLabelSetBorder(Label_CH, FALSE);
-	gwinSetFont(Label_CH, dejavu_sans_12);
-	gwinRedraw(Label_CH);
+	Button_CH =  gwinButtonCreate(0, &wi);
+	gwinSetTag(Button_CH,Button_CH_ID);
+	gwinSetFont(Button_CH, dejavu_sans_12);
+	gwinRedraw(Button_CH);
+
+
 
 	// Create label widget: X_A_Label
 	wi.g.show = TRUE;
@@ -979,24 +984,26 @@ void waveDisplay()
       if(!lst_opened)
    {
 		//redraw_grid();
-		for(x=0;x<ADC_bufsize;x++)
+   		if(!is_CH_stop)
 		{
-			cur_draw[x] =  ADC_to_screenY(scope.adc_buf[0][x]);
+			for(x=0;x<ADC_bufsize;x++)
+				cur_draw[x] =  ADC_to_screenY(scope.adc_buf[0][x]);
 		}
-
 		for(x=1;x<ADC_bufsize;x++)
 		{
 			gdispDrawLine( x,prev_draw[x-1],x,prev_draw[x],Black);
 		  	gdispDrawLine( x,cur_draw[x-1],x,cur_draw[x],Green);
 		}
-
-
-		for(x=0;x<ADC_bufsize;x++)
+		if(!is_CH_stop)
 		{
+			for(x=0;x<ADC_bufsize;x++)
 			prev_draw[x]= cur_draw[x];
+			updateMeasData();
+
 		}
-		updateMeasData();
-		redraw_cursor();
+			redraw_cursor();
+		
+
    	}
        
 }
@@ -1128,6 +1135,9 @@ inline void btn_event(uint16_t tag)
 		break;
 		case X_B_Button_ID:
 			opened_gh = &X_B_Button;
+		break;
+		case Button_CH_ID:
+			is_CH_stop = !is_CH_stop;	
 		break;
 
 	}
@@ -1263,6 +1273,8 @@ void guiEventLoop(void)
 							opened_gh = NULL;
 						}
 					break;
+
+					
 						
 				}
 				
