@@ -13,6 +13,7 @@ typedef struct
 	float pk;
 	float rms;
 	float avg;
+	int P;
 	
 }scope_t;
 extern float screen_Vscale;

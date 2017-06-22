@@ -267,7 +267,7 @@ static void createPagePage0(void)
 	wi.g.width = 10;
 	wi.g.height = 15;
 	wi.g.parent = ghContainerPage0;
-	wi.text = "A:";
+	wi.text = "A";
 	wi.customDraw = gwinLabelDrawJustifiedLeft;
 	wi.customParam = 0;
 	wi.customStyle = &x;
@@ -283,7 +283,7 @@ static void createPagePage0(void)
 	wi.g.width = 10;
 	wi.g.height = 15;
 	wi.g.parent = ghContainerPage0;
-	wi.text = "B:";
+	wi.text = "B";
 	wi.customDraw = gwinLabelDrawJustifiedLeft;
 	wi.customParam = 0;
 	wi.customStyle = &x;
@@ -331,7 +331,7 @@ static void createPagePage0(void)
 	wi.g.width = 10;
 	wi.g.height = 15;
 	wi.g.parent = ghContainerPage0;
-	wi.text = "A:";
+	wi.text = "A";
 	wi.customDraw = gwinLabelDrawJustifiedLeft;
 	wi.customParam = 0;
 	wi.customStyle = &y;
@@ -347,7 +347,7 @@ static void createPagePage0(void)
 	wi.g.width = 10;
 	wi.g.height = 15;
 	wi.g.parent = ghContainerPage0;
-	wi.text = "B:";
+	wi.text = "B";
 	wi.customDraw = gwinLabelDrawJustifiedLeft;
 	wi.customParam = 0;
 	wi.customStyle = &y;
@@ -363,7 +363,7 @@ static void createPagePage0(void)
 	wi.g.width = 10;
 	wi.g.height = 15;
 	wi.g.parent = ghContainerPage0;
-	wi.text = "F:";
+	wi.text = "F";
 	wi.customDraw = gwinLabelDrawJustifiedLeft;
 	wi.customParam = 0;
 	wi.customStyle = &x;
@@ -379,7 +379,7 @@ static void createPagePage0(void)
 	wi.g.width = 20;
 	wi.g.height = 15;
 	wi.g.parent = ghContainerPage0;
-	wi.text = "A-B:";
+	wi.text = "A-B";
 	wi.customDraw = gwinLabelDrawJustifiedLeft;
 	wi.customParam = 0;
 	wi.customStyle = &x;
@@ -395,7 +395,7 @@ static void createPagePage0(void)
 	wi.g.width = 20;
 	wi.g.height = 15;
 	wi.g.parent = ghContainerPage0;
-	wi.text = "A-B:";
+	wi.text = "A-B";
 	wi.customDraw = gwinLabelDrawJustifiedLeft;
 	wi.customParam = 0;
 	wi.customStyle = &y;
@@ -411,7 +411,7 @@ static void createPagePage0(void)
 	wi.g.width = 20;
 	wi.g.height = 15;
 	wi.g.parent = ghContainerPage0;
-	wi.text = "Trg:";
+	wi.text = "Trg";
 	wi.customDraw = gwinLabelDrawJustifiedLeft;
 	wi.customParam = 0;
 	wi.customStyle = &trg;
@@ -427,7 +427,7 @@ static void createPagePage0(void)
 	wi.g.width = 25;
 	wi.g.height = 10;
 	wi.g.parent = ghContainerPage0;
-	wi.text = "RMS:";
+	wi.text = "RMS";
 	wi.customDraw = gwinLabelDrawJustifiedLeft;
 	wi.customParam = 0;
 	wi.customStyle = &x;
@@ -443,7 +443,7 @@ static void createPagePage0(void)
 	wi.g.width = 20;
 	wi.g.height = 10;
 	wi.g.parent = ghContainerPage0;
-	wi.text = "SF:";
+	wi.text = "SF";
 	wi.customDraw = gwinLabelDrawJustifiedLeft;
 	wi.customParam = 0;
 	wi.customStyle = &x;
@@ -459,7 +459,7 @@ static void createPagePage0(void)
 	wi.g.width = 25;
 	wi.g.height = 10;
 	wi.g.parent = ghContainerPage0;
-	wi.text = "Max:";
+	wi.text = "Max";
 	wi.customDraw = gwinLabelDrawJustifiedLeft;
 	wi.customParam = 0;
 	wi.customStyle = &x;
@@ -475,7 +475,7 @@ static void createPagePage0(void)
 	wi.g.width = 15;
 	wi.g.height = 10;
 	wi.g.parent = ghContainerPage0;
-	wi.text = "PP:";
+	wi.text = "PP";
 	wi.customDraw = gwinLabelDrawJustifiedLeft;
 	wi.customParam = 0;
 	wi.customStyle = &x;
@@ -491,7 +491,7 @@ static void createPagePage0(void)
 	wi.g.width = 25;
 	wi.g.height = 10;
 	wi.g.parent = ghContainerPage0;
-	wi.text = "AVG:";
+	wi.text = "AVG";
 	wi.customDraw = gwinLabelDrawJustifiedLeft;
 	wi.customParam = 0;
 	wi.customStyle = &x;
@@ -507,7 +507,7 @@ static void createPagePage0(void)
 	wi.g.width = 25;
 	wi.g.height = 10;
 	wi.g.parent = ghContainerPage0;
-	wi.text = "Min:";
+	wi.text = "Min";
 	wi.customDraw = gwinLabelDrawJustifiedLeft;
 	wi.customParam = 0;
 	wi.customStyle = &x;
@@ -520,10 +520,10 @@ static void createPagePage0(void)
 	wi.g.show = TRUE;
 	wi.g.x = 180;
 	wi.g.y = 210;
-	wi.g.width = 15;
+	wi.g.width = 25;
 	wi.g.height = 10;
 	wi.g.parent = ghContainerPage0;
-	wi.text = "Pk:";
+	wi.text = "Amp";
 	wi.customDraw = gwinLabelDrawJustifiedLeft;
 	wi.customParam = 0;
 	wi.customStyle = &x;
@@ -539,7 +539,7 @@ static void createPagePage0(void)
 	wi.g.width = 10;
 	wi.g.height = 10;
 	wi.g.parent = ghContainerPage0;
-	wi.text = "P:";
+	wi.text = "P";
 	wi.customDraw = gwinLabelDrawJustifiedLeft;
 	wi.customParam = 0;
 	wi.customStyle = &x;
@@ -830,9 +830,9 @@ static void createPagePage0(void)
 	// Create label widget: CH1_Pk_Label_Txt
 
 	wi.g.show = TRUE;
-	wi.g.x = 195;
+	wi.g.x = 205;
 	wi.g.y = 210;
-	wi.g.width = 55;
+	wi.g.width = 45;
 	wi.g.height = 10;
 	wi.g.parent = ghContainerPage0;
 	wi.text = "";
@@ -867,7 +867,7 @@ static void createPagePage0(void)
 	wi.g.width = 60;
 	wi.g.height = 10;
 	wi.g.parent = ghContainerPage0;
-	wi.text = "";
+	wi.text = "0.000000";
 	wi.customDraw = gwinLabelDrawJustifiedRight;
 	wi.customParam = 0;
 	wi.customStyle = &x;
@@ -875,6 +875,7 @@ static void createPagePage0(void)
 	gwinLabelSetBorder(CH1_P_Label_Txt, FALSE);
 	gwinSetFont(CH1_P_Label_Txt, dejavu_sans_10);
 	gwinRedraw(CH1_P_Label_Txt);
+
 
 	// Create list widget: T_Div_List
 	wi.g.show = FALSE;
@@ -905,13 +906,7 @@ static void createPagePage0(void)
 	gwinListSetSelected(T_Div_List, 4, FALSE);
 	gwinListSetSelected(T_Div_List, 5, FALSE);
 
-/*
-	char init_str[8];
-	float2str(screenY_to_V(Y_A_val),init_str,3);
-	gwinSetText(Y_A_Button,init_str,TRUE);	
-	float2str(screenY_to_V(Y_B_val),init_str,3);
-	gwinSetText(Y_B_Button,init_str,TRUE);	
-*/	
+
 }
 
 
@@ -959,7 +954,7 @@ void waveDisplay()
   //Assume 42MHz sample rate---> down scale to 420Hz
   scope.adc_buf[0][0] = HAL_ADC_GetValue(&hadc1);
   int x = 1;
-  bool Trg_flag = false;
+  
   Trg_cnt = 0;
   //get 320 adc data
   //DONOT draw wave in this field ,do it later instead. 
@@ -972,13 +967,14 @@ void waveDisplay()
   	  	 	if(isTriggered(scope.adc_buf[0][x],scope.adc_buf[0][x-1]))
 	  	  	{
 	  	  		Trg_cnt++;
-	  	  		 if(!Trg_flag)
-  	  	 		{
+	  	  		if(Trg_cnt==1)
 		  	  		x=0;
-		  	  		Trg_flag = TRUE;
-		  	 	}
+	  	 		else if(Trg_cnt==2)
+	  	 		{
+	  	 			scope.P = x;
+
+	  	 		}
 	  	  	}
-  	  	 
    	  	if(x==ADC_bufsize-1) //buffer 320 ready
    			break;
    	     x++; 
@@ -1044,6 +1040,8 @@ void updateMeasData()
 	float2str(Trg_cnt,val_str,1);
 	strcat(val_str,"||");
 	gwinSetText(CH1_SF_Label_Txt,val_str,TRUE);	
+	int2str(screenX_to_T(scope.P),val_str);
+	gwinSetText(CH1_P_Label_Txt,val_str,TRUE);
 	
 		
 }
